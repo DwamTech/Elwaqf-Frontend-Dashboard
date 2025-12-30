@@ -2,6 +2,14 @@
   --header-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
 
+.topbarInner,
+.headerInner,
+.footerInner,
+.footerBottomInner {
+  width: min(1280px, 100%);
+  margin: 0 auto;
+}
+
 .topbar {
   width: 100%;
   background: var(--brand-primary);
@@ -98,6 +106,10 @@
   padding: 6px 8px;
   border-bottom: 3px solid transparent;
 }
+.navItem a:hover{
+  color: #936500;
+}
+
 
 .navItemActive a {
   color: var(--brand-primary);
@@ -224,16 +236,19 @@
   border-top: 1px solid #222;
   color: #aaa;
   text-align: center;
-  padding: 12px 20px;
   background-color: #282828;
+}
+
+.footerBottomInner {
+  padding: 12px 20px;
 }
 
 .scrollTop {
   position: fixed;
   bottom: 18px;
-  inset-inline-start: 18px;
-  width: 36px;
-  height: 36px;
+  inset-inline-end: 18px;
+  width: 46px;
+  height: 46px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: saturate(180%) blur(6px);

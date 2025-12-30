@@ -2,22 +2,15 @@ import "./globals.css";
 import { Tajawal } from "next/font/google";
 import styles from "./layout.module.css";
 import Image from "next/image";
+import Link from "next/link";
+import HeaderNav from "@/components/HeaderNav";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import {
   FaYoutube,
   FaTwitter,
   FaFacebookF,
   FaEnvelope,
-  FaHome,
-  FaLandmark,
-  FaThumbtack,
   FaPhone,
-  FaChevronDown,
-  FaInfoCircle,
-  FaBook,
-  FaCoins,
-  FaChartBar,
-  FaCalendarAlt,
   FaSmile,
   FaLightbulb,
   FaExclamationTriangle,
@@ -25,6 +18,7 @@ import {
   FaUsers,
   FaNewspaper,
   FaFileAlt,
+  FaCoins,
   FaMapMarkerAlt,
   FaCreditCard,
 } from "react-icons/fa";
@@ -69,48 +63,16 @@ export default function RootLayout({ children }) {
                   <a href="#" aria-label="Facebook"><FaFacebookF size={18} /></a>
                 </div>
               </div>
-              
-              
             </div>
           </div>
           <div className={styles.header}>
             <div className={styles.headerInner}>
               <div className={styles.logoLeft}>
-                <Image src="/وقف-الغيث.jpeg" alt="وقف الصالح الخيري" width={160} height={56} priority />
+                <Link href="/"><Image src="/وقف-الغيث.jpeg" alt="وقف الصالح الخيري" width={160} height={56} priority /></Link>
               </div>
-              <nav>
-                <ul className={styles.nav}>
-                  <li className={`${styles.navItem} ${styles.navItemActive}`}>
-                    <a href="#"><FaHome className={styles.navIcon} aria-hidden />الرئيسية</a>
-                  </li>
-                  <li className={`${styles.navItem} ${styles.hasDropdown}`}>
-                    <a href="#"><FaLandmark className={styles.navIcon} aria-hidden />الحكومه<FaChevronDown className={styles.chevron} aria-hidden /></a>
-                    <div className={styles.dropdownMenu}>
-                      <a href="#"><FaInfoCircle className={styles.iconPrimary} />عن الوقف</a>
-                      <a href="#"><FaBook className={styles.iconSecondary} />اللوائح والسياسات</a>
-                      <a href="#"><FaCoins className={styles.iconPrimary} />مصارف الربع</a>
-                      <a href="#"><FaChartBar className={styles.iconSecondary} />التقارير المالية</a>
-                      <a href="#"><FaCalendarAlt className={styles.iconPrimary} />التقارير السنوية</a>
-                    </div>
-                  </li>
-                  <li className={styles.navItem}>
-                    <a href="#"><FaThumbtack className={styles.navIcon} aria-hidden />أخبار الوقف</a>
-                  </li>
-                  <li className={`${styles.navItem} ${styles.hasDropdown}`}>
-                    <a href="#"><FaPhone className={styles.navIcon} aria-hidden />تواصل معنا<FaChevronDown className={styles.chevron} aria-hidden /></a>
-                    <div className={`${styles.dropdownMenu} ${styles.dropdownWide}`}>
-                      <a href="#"><FaSmile className={styles.iconSuccess} />تقييم رضا المستفيدين</a>
-                      <a href="#"><FaLightbulb className={styles.iconIdea} />صندوق الاقتراحات</a>
-                      <a href="#"><FaExclamationTriangle className={styles.iconSuccess} />صندوق الشكاوي</a>
-                    </div>
-                  </li>
-                  <li className={styles.navItem}>
-                    <a href="#"><FaClipboard className={styles.navIcon} aria-hidden />طلبات الدعم</a>
-                  </li>
-                </ul>
-              </nav>
+              <HeaderNav />
               <div className={styles.logoRight}>
-                <Image src="/الوقف.png" alt="وقف الغيث" width={160} height={60} priority />
+                <Link href="/"><Image src="/الوقف.png" alt="وقف الغيث" width={160} height={60} priority /></Link>
               </div>
             </div>
           </div>
@@ -152,7 +114,9 @@ export default function RootLayout({ children }) {
             </div>
           </div>
           <div className={styles.footerBottom}>
-            جميع الحقوق محفوظة لوقف الصالح الخيري © 1443 هـ
+            <div className={styles.footerBottomInner}>
+              جميع الحقوق محفوظة لوقف الصالح الخيري © 1443 هـ
+            </div>
           </div>
         </footer>
         <ScrollToTopButton className={styles.scrollTop} />
