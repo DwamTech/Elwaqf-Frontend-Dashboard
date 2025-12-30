@@ -27,7 +27,7 @@ html {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: "Tajawal", "Segoe UI", Tahoma, Arial, Helvetica, sans-serif;
+  font-family: "Cairo", "Segoe UI", Tahoma, Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

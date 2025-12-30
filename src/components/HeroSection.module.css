@@ -3,6 +3,7 @@
   width: 100%;
   height: 180px;
   overflow: hidden;
+  
 }
 
 .hero::after {
@@ -21,6 +22,7 @@
   justify-content: flex-end;
   padding: 0 24px;
   z-index: 1;
+  
 }
 
 .heroTitle {
@@ -28,6 +30,7 @@
   font-weight: 900;
   font-size: clamp(20px, 3vw, 32px);
   letter-spacing: -0.5px;
+  
 }
 
 @media (max-width: 600px) {

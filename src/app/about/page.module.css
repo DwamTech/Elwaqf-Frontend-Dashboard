@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap');
+
 .main {
   width: 100%;
   background: var(--brand-white);
@@ -14,13 +17,11 @@
   margin: 0 auto;
   text-align: center;
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@400;700&display=swap');
 .basmala {
-  font-family: 'Reem Kufi', "Tajawal", "Segoe UI", Tahoma, Arial, Helvetica, sans-serif;
+  font-family: 'Scheherazade New', 'Amiri', "Cairo", "Segoe UI", Tahoma, Arial, Helvetica, sans-serif;
   font-weight: 700;
-  font-size: clamp(64px, 12vw, 170px);
-  line-height: 1.1;
+  font-size: clamp(64px, 12vw, 100px);
+  line-height: 3.1;
   color: var(--brand-black);
   margin-bottom: 20px;
 }

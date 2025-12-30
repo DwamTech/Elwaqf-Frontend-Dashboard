@@ -1,5 +1,5 @@
 import "./globals.css";
-import { Tajawal } from "next/font/google";
+import { Cairo } from "next/font/google";
 import styles from "./layout.module.css";
 import Image from "next/image";
 import Link from "next/link";
@@ -28,7 +28,7 @@ export const metadata = {
   description: "موقع وقف الصالح الخيري",
 };
 
-const tajawal = Tajawal({
+const cairo = Cairo({
   weight: ["400", "500", "700", "800", "900"],
   subsets: ["arabic"],
   display: "swap",
@@ -46,7 +46,7 @@ export default function RootLayout({ children }) {
   }).format(now);
   return (
     <html lang="ar" dir="rtl">
-      <body className={tajawal.className}>
+      <body className={cairo.className}>
         <header>
           <div className={styles.topbar}>
             <div className={styles.topbarInner}>

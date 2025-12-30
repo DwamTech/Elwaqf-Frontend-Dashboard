@@ -35,8 +35,8 @@ export default function HeaderNav() {
           <a href="#"><FaLandmark className={styles.navIcon} aria-hidden />الحكومه<FaChevronDown className={styles.chevron} aria-hidden /></a>
           <div className={styles.dropdownMenu}>
             <Link href="/about"><FaInfoCircle className={styles.iconPrimary} />عن الوقف</Link>
-            <a href="#policies"><FaBook className={styles.iconSecondary} />اللوائح والسياسات</a>
-            <a href="#"><FaCoins className={styles.iconPrimary} />مصارف الريع</a>
+            <Link href="/books-policies"><FaBook className={styles.iconSecondary} />اللوائح والسياسات</Link>
+            <Link href="/funds"><FaCoins className={styles.iconPrimary} />مصارف الريع</Link>
             <Link href="/reports/financial"><FaChartBar className={styles.iconSecondary} />التقارير المالية</Link>
             <Link href="/reports/annual"><FaCalendarAlt className={styles.iconPrimary} />التقارير السنوية</Link>
           </div>
@@ -47,7 +47,7 @@ export default function HeaderNav() {
         <li className={`${styles.navItem} ${styles.hasDropdown}`}>
           <a href="#"><FaPhone className={styles.navIcon} aria-hidden />تواصل معنا<FaChevronDown className={styles.chevron} aria-hidden /></a>
           <div className={`${styles.dropdownMenu} ${styles.dropdownWide}`}>
-            <a href="#"><FaSmile className={styles.iconSuccess} />تقييم رضا المستفيدين</a>
+            <a href="/satisfaction"><FaSmile className={styles.iconSuccess} />تقييم رضا المستفيدين</a>
             <a href="#"><FaLightbulb className={styles.iconIdea} />صندوق الاقتراحات</a>
             <a href="#"><FaExclamationTriangle className={styles.iconSuccess} />صندوق الشكاوي</a>
           </div>
