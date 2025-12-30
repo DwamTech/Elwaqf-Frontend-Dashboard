@@ -1,11 +1,16 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --brand-primary: #385F58;
+  --brand-secondary: #98896F;
+  --brand-black: #000000;
+  --brand-white: #ffffff;
+
+  --background: var(--brand-white);
+  --foreground: var(--brand-black);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #000000;
     --foreground: #ededed;
   }
 }
@@ -19,7 +24,7 @@ body {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Tajawal", "Segoe UI", Tahoma, Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -31,7 +36,7 @@ body {
 }
 
 a {
-  color: inherit;
+  color: var(--brand-primary);
   text-decoration: none;
 }
 
