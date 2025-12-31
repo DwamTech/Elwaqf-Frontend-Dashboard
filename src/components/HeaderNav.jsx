@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import styles from "@/app/layout.module.css";
+import styles from "../app/(website)/layout.module.css";
 import {
   FaHome,
   FaLandmark,

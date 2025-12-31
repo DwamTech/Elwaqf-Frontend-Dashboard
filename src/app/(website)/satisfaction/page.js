@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import HeroSection from "@/components/HeroSection";
+import HeroSection from "../../../components/HeroSection";
 import { FaStar, FaRegStar, FaStarHalfAlt } from "react-icons/fa";
 import styles from "./page.module.css";
 

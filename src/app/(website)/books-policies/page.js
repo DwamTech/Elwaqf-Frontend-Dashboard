@@ -1,6 +1,6 @@
 "use client";
-import HeroSection from "@/components/HeroSection";
-import PolicyCard from "@/components/PolicyCard";
+import HeroSection from "../../../components/HeroSection";
+import PolicyCard from "../../../components/PolicyCard";
 import styles from "./page.module.css";
 
 export default function BooksPoliciesPage() {
@@ -20,7 +20,7 @@ export default function BooksPoliciesPage() {
         imageSrc="/باب_وكسوة_الكعبة.jpg"
         imageAlt="الكتب واللوائح والسياسات"
         align="start"
-        
+
       />
       <section className={styles.cardsSection}>
         <div className={styles.cardsInner}>
