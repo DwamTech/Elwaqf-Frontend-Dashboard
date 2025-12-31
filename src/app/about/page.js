@@ -7,9 +7,13 @@ export default function AboutPage() {
   return (
     <main className={styles.main} dir="ltr">
       <HeroSection
-        title="عن الوقف"
+        title="عـن الـوقــف"
         imageSrc="/باب_وكسوة_الكعبة.jpg"
         imageAlt="عن الوقف"
+        align="center"
+        fontSize="clamp(100px, 20vw, 150px)"
+        titleFontSize="clamp(64px, 12vw, 100px)"
+        textShadow="0 20px 40px rgba(0,0,0,0.6)"
       />
 
       <section className={styles.introSection}>

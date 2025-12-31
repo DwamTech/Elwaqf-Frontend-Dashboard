@@ -68,11 +68,11 @@ export default function RootLayout({ children }) {
           <div className={styles.header}>
             <div className={styles.headerInner}>
               <div className={styles.logoLeft}>
-                <Link href="/"><Image src="/وقف-الغيث.jpeg" alt="وقف الصالح الخيري" width={160} height={56} priority /></Link>
+                <Link href="/"><Image src="/وقف-الغيث.jpeg" alt="وقف  الغيث" width={160} height={56} priority /></Link>
               </div>
               <HeaderNav />
               <div className={styles.logoRight}>
-                <Link href="/"><Image src="/الوقف.png" alt="وقف الغيث" width={160} height={60} priority /></Link>
+                <Link href="/"><Image src="/الوقف.png" alt="وقف الصالح الخيري" width={200} height={60} priority /></Link>
               </div>
             </div>
           </div>
@@ -115,7 +115,10 @@ export default function RootLayout({ children }) {
           </div>
           <div className={styles.footerBottom}>
             <div className={styles.footerBottomInner}>
-              جميع الحقوق محفوظة لوقف الصالح الخيري © 1443 هـ
+              <span>تصميم وتطوير شركة </span>
+              <a href="https://dwam-tech.com/" target="_blank" rel="noopener noreferrer" aria-label="Dwam Tech">
+                <Image src="/dwam.png" alt="Dwam Tech" width={28} height={28} style={{ borderRadius: "50%" }} />
+              </a>
             </div>
           </div>
         </footer>

@@ -15,7 +15,7 @@ export default function SatisfactionPage() {
   return (
     <main className={styles.main}>
       <HeroSection
-        title="تقييم رضا المستفيدين"
+        title="تقيـيم رضا المستـفيديـن"
         imageSrc="/75884be2-3e9d-4126-ace3-770ef0c2f071_16x9_1200x676.webp"
         imageAlt="تقييم رضا المستفيدين"
         align="center"
@@ -35,14 +35,14 @@ export default function SatisfactionPage() {
         <div className={styles.ratingInner}>
           <div className={styles.ratingHeader}>
             <span className={styles.label}>اضف تقييمك..</span>
-            <button
+            {/* <button
               type="button"
               className={styles.rateBtn}
               onClick={() => setRating(hover || rating)}
               aria-label="قيم الآن"
             >
               قيم الآن !!
-            </button>
+            </button> */}
           </div>
           <div className={styles.placeholderStars} aria-hidden="true">
             <FaStar className={styles.starPlaceholder} />

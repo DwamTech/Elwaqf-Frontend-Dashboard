@@ -122,7 +122,7 @@ export default function Home() {
     <main className={styles.main}>
       <section className={styles.hero}>
         <Image
-          src="/باب_وكسوة_الكعبة.jpg"
+          src="/ffdsfdf.webp"
           alt="باب وكسوة الكعبة"
           fill
           priority
@@ -276,11 +276,11 @@ export default function Home() {
               <FiChevronRight size={20} />
             </button>
           </div>
-          <div className={styles.sliderCta}>
+          {/* <div className={styles.sliderCta}>
             <Link className={styles.readMoreSingle} href="/news">
               اقرأ المزيد
             </Link>
-          </div>
+          </div> */}
         </div>
       </section>
       <section className={styles.statsSection}>

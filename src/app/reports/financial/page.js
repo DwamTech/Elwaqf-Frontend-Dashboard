@@ -9,9 +9,10 @@ export default function FinancialReportsPage() {
   return (
     <div className={styles.page}>
       <HeroSection
-        title="التقارير المالية"
+        title="التـقـاريـر المـالية"
         imageSrc="/باب_وكسوة_الكعبة.jpg"
         imageAlt="باب وكسوة الكعبة"
+        align="center"
       />
 
       <section className={styles.section}>

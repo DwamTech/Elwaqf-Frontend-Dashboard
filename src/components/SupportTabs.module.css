@@ -1,0 +1,211 @@
+.section {
+  width: 100%;
+  padding: clamp(32px, 6vw, 56px) 20px;
+  background: radial-gradient(1200px 500px at 50% -100px, rgba(56,95,88,0.08), transparent 60%),
+              linear-gradient(135deg, #f9fbfa, #f3f7f6);
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  max-width: 1040px;
+  width: 100%;
+  margin: 0 auto;
+  border-radius: 18px;
+  padding: clamp(18px, 4vw, 28px);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+  text-align: center;
+  animation: floatIn 700ms ease both;
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  margin-bottom: 16px;
+  width: 100%;
+  border-bottom: 2px solid rgba(56, 95, 88, 0.12);
+  background: linear-gradient(180deg, #f9fbfa, #f3f7f6);
+  border-radius: 12px 12px 0 0;
+}
+
+.tabBtn {
+  width: 100%;
+  height: 52px;
+  padding: 0 18px;
+  border-radius: 12px 12px 0 0;
+  border: none;
+  background: #385f5843;
+  color: var(--brand-black);
+  font-weight: 900;
+  font-family: inherit;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  border-bottom: 3px solid transparent;
+  
+}
+
+.tabBtnActive {
+  color: var(--brand-primary);
+  border-bottom-color: var(--brand-primary);
+}
+.tabBtnActive:hover {
+  color: var(--brand-primary);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tabBtn:hover {
+    transform: translateY(-1px);
+    box-shadow: none;
+    background: rgba(56, 95, 88, 0.06);
+  }
+}
+
+.form {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.label {
+  color: var(--brand-black);
+  font-weight: 800;
+  font-size: 14px;
+  margin-bottom: 6px;
+  text-align: start;
+  font-family: inherit;
+}
+
+.input,
+.select,
+.textarea,
+.file {
+  width: 100%;
+  border: 1px solid #eee;
+  background: #fff;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-family: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27><path fill=%27%2398896F%27 d=%27M7 10l5 5 5-5%27/></svg>");
+  background-repeat: no-repeat;
+  background-position: left 12px center;
+  background-size: 18px;
+  padding-left: 40px;
+}
+
+.select option {
+  font-family: inherit;
+  color: var(--brand-black);
+  background-color: #fff;
+}
+
+.select option:checked {
+  background-color: rgba(56, 95, 88, 0.12);
+  color: var(--brand-primary);
+}
+
+.textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgba(56, 95, 88, 0.12);
+  transform: translateY(-1px);
+}
+
+.error {
+  color: #b00020;
+  font-weight: 700;
+  font-size: 13px;
+  text-align: start;
+  margin-top: 6px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.submit {
+  height: 42px;
+  padding: 0 18px;
+  border-radius: 12px;
+  border: 1px solid var(--brand-primary);
+  background: var(--brand-primary);
+  color: var(--brand-white);
+  font-weight: 900;
+  font-family: inherit;
+  letter-spacing: 0.2px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+  }
+}
+
+.submit[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.status {
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.statusSuccess {
+  color: #1b8a2f;
+}
+
+.statusError {
+  color: #b00020;
+}
+
+.goals {
+  display: grid;
+  gap: 8px;
+}
+
+.addGoal {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px dashed var(--brand-primary);
+  background: #fff;
+  color: var(--brand-primary);
+  font-weight: 900;
+}
+
+@keyframes floatIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}

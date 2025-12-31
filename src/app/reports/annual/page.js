@@ -9,9 +9,10 @@ export default function AnnualReportsPage() {
   return (
     <div className={styles.page}>
       <HeroSection
-        title="التقارير السنوية"
+        title="التـقـاريـر السـنـويـة"
         imageSrc="/باب_وكسوة_الكعبة.jpg"
         imageAlt="باب وكسوة الكعبة"
+        align="center"
       />
 
       <section className={styles.section}>

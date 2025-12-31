@@ -28,10 +28,10 @@ export default function FundsPage() {
   return (
     <main className={styles.main}>
       <HeroSection
-        title="مصارف الريع"
+        title="مصــارف الـريـع"
         imageSrc="/باب_وكسوة_الكعبة.jpg"
         imageAlt="مصارف الريع"
-        align="start"
+        align="center"
       />
 
       <section className={styles.imageSection}>

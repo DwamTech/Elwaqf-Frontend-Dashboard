@@ -21,9 +21,10 @@ export default function NewsPage() {
   return (
     <div className={styles.page}>
       <HeroSection
-        title="أخبار الوقف"
+        title="أخبار الـوقــف"
         imageSrc="/باب_وكسوة_الكعبة.jpg"
         imageAlt="باب وكسوة الكعبة"
+        align="center"
       />
 
       <section className={styles.section}>

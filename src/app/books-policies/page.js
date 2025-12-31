@@ -19,7 +19,7 @@ export default function BooksPoliciesPage() {
         title="الكتب / اللوائح والسياسات"
         imageSrc="/باب_وكسوة_الكعبة.jpg"
         imageAlt="الكتب واللوائح والسياسات"
-        align="start"
+        align="center"
         
       />
       <section className={styles.cardsSection}>

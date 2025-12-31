@@ -26,6 +26,14 @@
   margin-bottom: 20px;
 }
 
+@media (max-width: 600px) {
+  .basmala {
+    font-size: 36px;
+    line-height: 2;
+    margin-bottom: 14px;
+  }
+}
+
 .introHeading {
   color: var(--brand-primary);
   font-weight: 900;

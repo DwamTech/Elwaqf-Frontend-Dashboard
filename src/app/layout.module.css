@@ -100,6 +100,10 @@
   list-style: none;
 }
 
+.navBar {
+  display: block;
+}
+
 .navItem a {
   color: var(--brand-black);
   font-weight: 600;
@@ -154,6 +158,15 @@
   padding: 8px 10px;
   color: var(--brand-black);
   border-radius: 6px;
+  text-decoration: none;
+  border-bottom: none;
+}
+
+.dropdownActive {
+  background: rgba(56, 95, 88, 0.2);
+  color: var(--brand-primary);
+  font-weight: 800;
+  border-bottom: none;
 }
 
 .dropdownMenu a svg {
@@ -178,6 +191,151 @@
 }
 .hasDropdown:hover .dropdownMenu {
   display: block;
+}
+
+.hamburgerBtn {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid #eee;
+  background: #fff;
+  color: var(--brand-secondary);
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebarOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: none;
+  z-index: 99;
+}
+.sidebarOverlay.open {
+  display: block;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  inset-inline-start: 0;
+  height: 100%;
+  width: min(360px, 86%);
+  background: var(--brand-white);
+  box-shadow: -8px 0 28px rgba(0, 0, 0, 0.15);
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+.closeBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  background: #fff;
+  color: var(--brand-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.sidebarLogo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebarBody {
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+}
+.sidebarLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  color: var(--brand-black);
+  text-decoration: none;
+}
+.sidebarGroupBtn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--brand-black);
+}
+.rotate {
+  transform: rotate(180deg);
+}
+.sidebarSubmenu {
+  display: none;
+  padding-inline-start: 8px;
+  border-inline-start: 2px solid rgba(0,0,0,0.06);
+  margin-inline-start: 4px;
+}
+.sidebarSubmenu.show {
+  display: grid;
+  gap: 8px;
+  padding: 8px 0 8px;
+}
+.sidebarSubLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  color: var(--brand-black);
+  text-decoration: none;
+  border-radius: 6px;
+}
+.sidebarFooter {
+  margin-top: auto;
+  padding: 12px;
+  border-top: 1px solid #eee;
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+}
+.sidebarEmail {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--brand-black);
+}
+.sidebarSocial {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.sidebarSocial a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: rgba(0,0,0,0.06);
+  color: var(--brand-black);
 }
 
 .footer {
@@ -241,6 +399,10 @@
 
 .footerBottomInner {
   padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
 .scrollTop {
@@ -263,16 +425,67 @@
 
 @media (max-width: 992px) {
   .headerInner {
-    grid-template-columns: 1fr;
+    grid-template-columns: auto 1fr;
     gap: 10px;
   }
 
+  .topbar {
+    display: none;
+  }
+
+  .logoRight {
+    display: none;
+  }
+
   .nav {
-    flex-wrap: wrap;
-    gap: 16px;
+    display: none;
+  }
+
+  .navBar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .hamburgerBtn {
+    display: inline-flex;
   }
 
   .footerInner {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+    gap: 12px;
+  }
+  .footerCol {
+    text-align: center;
+    flex: 1 1 100%;
+  }
+  .footerCol:nth-child(2),
+  .footerCol:nth-child(3) {
+    flex: 1 1 calc(50% - 6px);
+  }
+  .footerCol ul li {
+    justify-content: center;
+  }
+
+  .sidebarGroupBtn {
+    font-family: inherit;
+    font-weight: 800;
+    font-size: 16px;
+    color: var(--brand-primary);
+    text-align: start;
+    justify-content: flex-start;
+    gap: 12px;
+  }
+  .sidebarGroupBtn .chevron {
+    margin-inline-start: auto;
+  }
+  .sidebarLink,
+  .sidebarSubLink {
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 15px;
   }
 }

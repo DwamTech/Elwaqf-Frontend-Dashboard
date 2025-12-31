@@ -35,7 +35,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(33, 16, 8, 0.597);
+  background: rgba(0, 0, 0, 0.445);
   z-index: 1;
   pointer-events: none;
 }
@@ -310,6 +310,7 @@ a.secondary {
   border: 1px solid rgba(255,255,255,0.5);
   box-shadow: 0 10px 26px rgba(0,0,0,0.18);
   transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  margin-bottom: 24px;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -331,6 +332,7 @@ a.secondary {
   align-items: center;
   justify-content: center;
   transition: transform 0.15s ease, background 0.15s ease;
+  margin: 24px 0;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -365,6 +367,25 @@ a.secondary {
   }
 }
 
+/* Edge-to-edge on mobile */
+@media (max-width: 600px) {
+  .main {
+    padding: 0;
+  }
+  .about,
+  .sliderNews,
+  .sliderPolicies,
+  .fullImageSection,
+  .mapSection {
+    padding: 0;
+  }
+  .sliderInner {
+    margin: 0;
+  }
+  .sliderTrack {
+    padding: 0;
+  }
+}
 @media (prefers-color-scheme: dark) {
   .logo {
     filter: invert();
@@ -388,6 +409,10 @@ a.secondary {
     grid-template-columns: 1fr;
   }
   .aboutText {
+    text-align: center;
+    width: 100%;
+  }
+  .aboutPara {
     text-align: center;
   }
 }
@@ -631,10 +656,35 @@ a.secondary {
   color: var(--brand-primary);
 }
 
-.statLabel {
+.statsLabel {
   font-size: 16px;
   font-weight: 700;
   color: var(--brand-primary);
+}
+
+@media (max-width: 600px) {
+  .statsCards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .statsCard {
+    min-width: 0;
+    max-width: none;
+    padding: 12px;
+    flex: 0 0 auto;
+    width: 100%;
+  }
+  .statNumber {
+    font-size: 24px;
+  }
+  .statLabel {
+    font-size: 14px;
+  }
+  .statIcon svg {
+    width: 28px;
+    height: 28px;
+  }
 }
 
 .mapSection {
