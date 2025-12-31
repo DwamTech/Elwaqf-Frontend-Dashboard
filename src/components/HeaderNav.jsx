@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import styles from "@/app/layout.module.css";
+import styles from "../app/(website)/layout.module.css";
 import {
   FaHome,
   FaLandmark,

@@ -1,10 +1,10 @@
 import "./globals.css";
-import { Cairo } from "next/font/google";
+import { Tajawal } from "next/font/google";
 import styles from "./layout.module.css";
 import Image from "next/image";
 import Link from "next/link";
-import HeaderNav from "@/components/HeaderNav";
-import ScrollToTopButton from "@/components/ScrollToTopButton";
+import HeaderNav from "../../components/HeaderNav";
+import ScrollToTopButton from "../../components/ScrollToTopButton";
 import {
   FaYoutube,
   FaTwitter,
@@ -28,7 +28,7 @@ export const metadata = {
   description: "موقع وقف الصالح الخيري",
 };
 
-const cairo = Cairo({
+const tajawal = Tajawal({
   weight: ["400", "500", "700", "800", "900"],
   subsets: ["arabic"],
   display: "swap",
@@ -46,7 +46,7 @@ export default function RootLayout({ children }) {
   }).format(now);
   return (
     <html lang="ar" dir="rtl">
-      <body className={cairo.className}>
+      <body className={tajawal.className}>
         <header>
           <div className={styles.topbar}>
             <div className={styles.topbarInner}>

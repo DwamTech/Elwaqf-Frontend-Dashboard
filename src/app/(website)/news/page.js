@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./page.module.css";
 import { newsItems } from "./newsData";
-import HeroSection from "@/components/HeroSection";
+import HeroSection from "../../../components/HeroSection";
 
 export const metadata = {
   title: "أخبار الوقف | وقف الصالح الخيري",

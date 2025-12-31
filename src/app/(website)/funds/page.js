@@ -1,6 +1,6 @@
 "use client";
-import HeroSection from "@/components/HeroSection";
-import AboutInfo from "@/components/AboutInfo";
+import HeroSection from "../../../components/HeroSection";
+import AboutInfo from "../../../components/AboutInfo";
 import Image from "next/image";
 import styles from "./page.module.css";
 

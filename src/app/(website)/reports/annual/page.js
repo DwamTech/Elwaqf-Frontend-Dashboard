@@ -1,15 +1,15 @@
-import HeroSection from "@/components/HeroSection";
+import HeroSection from "../../../../components/HeroSection";
 import styles from "../reports.module.css";
 
 export const metadata = {
-  title: "التقارير المالية | وقف الصالح الخيري",
+  title: "التقارير السنوية | وقف الصالح الخيري",
 };
 
-export default function FinancialReportsPage() {
+export default function AnnualReportsPage() {
   return (
     <div className={styles.page}>
       <HeroSection
-        title="التـقـاريـر المـالية"
+        title="التـقـاريـر السـنـويـة"
         imageSrc="/باب_وكسوة_الكعبة.jpg"
         imageAlt="باب وكسوة الكعبة"
         align="center"
