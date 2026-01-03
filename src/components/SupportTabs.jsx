@@ -547,7 +547,7 @@ function OrganizationForm() {
         </div>
         {errors.goal1 && <span className={styles.error}>يرجى إدخال هدف واحد على الأقل</span>}
       </div>
-      <div className={`${styles.field} ${styles.full}`}>
+      <div className={styles.field}>
         <label className={styles.label}>المستفيدون من المشروع *</label>
         <CustomSelect
           value={form.beneficiaries}

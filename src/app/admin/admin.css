@@ -34,3 +34,66 @@
     transform: translateY(0);
   }
 }
+
+/* Animated Hero */
+.animated-hero {
+  background: linear-gradient(135deg, rgba(56, 95, 88, 0.12), rgba(147, 101, 0, 0.10));
+}
+.hero-grid {
+  background-image:
+    radial-gradient(circle at 20% 10%, rgba(147, 101, 0, 0.15), transparent 35%),
+    radial-gradient(circle at 80% 60%, rgba(56, 95, 88, 0.15), transparent 35%),
+    repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.03) 0, rgba(0, 0, 0, 0.03) 2px, transparent 4px);
+  filter: saturate(1.1);
+}
+.hero-blob {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  filter: blur(28px);
+  opacity: 0.25;
+  animation: floatY 12s ease-in-out infinite;
+}
+.hero-blob-1 {
+  right: -80px;
+  top: -80px;
+  background: radial-gradient(circle at 30% 30%, rgba(147, 101, 0, 0.35), transparent 60%);
+  animation-delay: 0.3s;
+}
+.hero-blob-2 {
+  left: -90px;
+  bottom: -90px;
+  background: radial-gradient(circle at 70% 70%, rgba(56, 95, 88, 0.35), transparent 60%);
+  animation-delay: 1.2s;
+}
+.hero-dot {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(147, 101, 0, 0.8);
+  box-shadow: 0 0 12px rgba(147, 101, 0, 0.6);
+  animation: pulseGlow 2.8s ease-in-out infinite;
+}
+.hero-dot-1 {
+  top: 24px;
+  left: 24px;
+}
+.hero-dot-2 {
+  bottom: 26px;
+  right: 28px;
+  background: rgba(56, 95, 88, 0.8);
+  box-shadow: 0 0 12px rgba(56, 95, 88, 0.6);
+  animation-delay: 0.8s;
+}
+@keyframes floatY {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-16px); }
+  100% { transform: translateY(0); }
+}
+@keyframes pulseGlow {
+  0% { transform: scale(0.95); opacity: 0.7; }
+  50% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.7; }
+}

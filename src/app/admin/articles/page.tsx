@@ -1,11 +1,91 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ArticleService } from "../services/articleService";
-import { FiPlus, FiSearch, FiEdit2, FiTrash2, FiEye, FiCheckCircle, FiXCircle, FiMoreVertical, FiUser, FiEyeOff, FiFilter } from "react-icons/fi";
+import { FiPlus, FiSearch, FiEdit2, FiTrash2, FiEye, FiCheckCircle, FiXCircle, FiMoreVertical, FiUser, FiEyeOff, FiFilter, FiChevronDown, FiCheck } from "react-icons/fi";
 import { useToast } from "@/components/admin/ToastProvider";
 import { SectionService, Section } from "../services/sectionService";
+
+type FancySelectOption = { label: string; value: string };
+
+function FancySelect({
+    value,
+    onChange,
+    options,
+    placeholder,
+    className
+}: {
+    value: string;
+    onChange: (v: string) => void;
+    options: FancySelectOption[];
+    placeholder: string;
+    className?: string;
+}) {
+    const [open, setOpen] = useState(false);
+    const [query, setQuery] = useState("");
+    const ref = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        const onDocClick = (e: MouseEvent) => {
+            if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+        };
+        document.addEventListener("mousedown", onDocClick);
+        return () => document.removeEventListener("mousedown", onDocClick);
+    }, []);
+
+    const selectedLabel = options.find(o => o.value === value)?.label || "";
+    const filtered = options.filter(o => o.label.toLowerCase().includes(query.toLowerCase()));
+
+    return (
+        <div ref={ref} className={`relative ${className || ""}`}>
+            <button
+                type="button"
+                onClick={() => setOpen(v => !v)}
+                className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm text-gray-700 flex items-center justify-between hover:border-primary/40 hover:shadow transition"
+            >
+                <span className={`line-clamp-1 ${selectedLabel ? "text-gray-800" : "text-gray-400"}`}>
+                    {selectedLabel || placeholder}
+                </span>
+                <FiChevronDown className="text-gray-400" />
+            </button>
+            {open && (
+                <div className="absolute z-50 mt-2 w-full bg-white border border-gray-100 rounded-xl shadow-lg overflow-hidden">
+                    <div className="flex items-center gap-2 px-3 py-2 border-b bg-gray-50">
+                        <FiSearch className="text-gray-400" size={14} />
+                        <input
+                            value={query}
+                            onChange={e => setQuery(e.target.value)}
+                            placeholder="بحث داخل الخيارات..."
+                            className="flex-1 bg-transparent outline-none text-xs text-gray-700"
+                        />
+                    </div>
+                    <ul className="max-h-56 overflow-y-auto admin-scrollbar">
+                        {filtered.map((opt) => (
+                            <li
+                                key={opt.value}
+                                onMouseDown={() => {
+                                    onChange(opt.value);
+                                    setOpen(false);
+                                    setQuery("");
+                                }}
+                                className={`px-3 py-2 text-sm cursor-pointer flex items-center justify-between hover:bg-gray-50 transition ${
+                                    value === opt.value ? "bg-primary/5 text-gray-900" : "text-gray-700"
+                                }`}
+                            >
+                                <span className="line-clamp-1">{opt.label}</span>
+                                {value === opt.value && <FiCheck className="text-primary" />}
+                            </li>
+                        ))}
+                        {filtered.length === 0 && (
+                            <li className="px-3 py-3 text-xs text-gray-500">لا توجد نتائج مطابقة</li>
+                        )}
+                    </ul>
+                </div>
+            )}
+        </div>
+    );
+}
 
 export default function ArticlesPage() {
     const toast = useToast();
@@ -160,28 +240,66 @@ export default function ArticlesPage() {
         }
     };
 
+    const totalCount = allArticles.length;
+    const publishedCount = allArticles.filter(a => a.status === "published").length;
+    const draftCount = allArticles.filter(a => a.status !== "published").length;
+    const sectionsCount = sections.length;
+    const authorsCount = Array.from(new Set(allArticles.map(a => a.author_name).filter(Boolean))).length;
+
     return (
         <div className="space-y-6">
-            {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-800">إدارة المقالات</h1>
-                    <p className="text-gray-500 text-sm mt-1">عرض وإدارة جميع المقالات المنشورة والمسودات</p>
-                </div>
-                <div className="flex gap-3">
-                    <Link
-                        href="/admin/articles/create"
-                        className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
-                    >
-                        <FiPlus size={18} />
-                        <span>أضافة مقال</span>
-                    </Link>
-                </div>
-            </div>
+            <section className="animated-hero relative overflow-hidden rounded-2xl p-6 md:p-8">
+                <div className="absolute inset-0 pointer-events-none hero-grid"></div>
+                <span className="hero-blob hero-blob-1"></span>
+                <span className="hero-blob hero-blob-2"></span>
+                <span className="hero-dot hero-dot-1"></span>
+                <span className="hero-dot hero-dot-2"></span>
 
-            {/* Search & Filters */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
-                {/* Search Box - Takes 6 cols */}
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="max-w-2xl">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/70 backdrop-blur-md text-xs font-semibold text-gray-700">
+                            <FiFilter className="text-primary" />
+                            <span>إدارة المقالات</span>
+                        </div>
+                        <h1 className="mt-3 text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
+                            تحكم مرئي وذكي في المقالات
+                        </h1>
+                        <p className="mt-2 text-gray-700">
+                            إنشاء، فلترة، ونشر المقالات بسهولة وتصميم متفاعل.
+                        </p>
+                        <div className="mt-4 flex flex-wrap items-center gap-3">
+                            <Link href="/admin/articles/create" className="inline-flex items-center gap-2 rounded-xl bg-primary text-white px-4 py-2 shadow-sm transition hover:shadow-md">
+                                <FiPlus />
+                                إضافة مقال جديد
+                            </Link>
+                            {/* <a href="#filters" className="inline-flex items-center gap-2 rounded-xl bg-secondary text-white px-4 py-2 shadow-sm transition hover:shadow-md">
+                                أدوات الفلترة
+                            </a> */}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="relative z-10 mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="rounded-xl bg-white/70 backdrop-blur-md p-4 shadow-sm">
+                        <p className="text-xs text-gray-600">إجمالي المقالات</p>
+                        <p className="text-xl font-bold text-gray-800">{totalCount}</p>
+                    </div>
+                    <div className="rounded-xl bg-white/70 backdrop-blur-md p-4 shadow-sm">
+                        <p className="text-xs text-gray-600">منشورة</p>
+                        <p className="text-xl font-bold text-gray-800">{publishedCount}</p>
+                    </div>
+                    <div className="rounded-xl bg-white/70 backdrop-blur-md p-4 shadow-sm">
+                        <p className="text-xs text-gray-600">مسودات</p>
+                        <p className="text-xl font-bold text-gray-800">{draftCount}</p>
+                    </div>
+                    <div className="rounded-xl bg-white/70 backdrop-blur-md p-4 shadow-sm">
+                        <p className="text-xs text-gray-600">الأقسام والكتاب</p>
+                        <p className="text-xl font-bold text-gray-800">{sectionsCount} قسم • {authorsCount} كاتب</p>
+                    </div>
+                </div>
+            </section>
+
+            <div id="filters" className="grid grid-cols-1 md:grid-cols-12 gap-3">
                 <div className="md:col-span-6 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm flex items-center">
                     <FiSearch className="text-gray-400" size={16} />
                     <input
@@ -193,47 +311,32 @@ export default function ArticlesPage() {
                     />
                 </div>
 
-                {/* Section Filter - Takes 2 cols */}
-                <div className="md:col-span-2 bg-white rounded-lg border border-gray-200 shadow-sm">
-                    <select
-                        value={selectedSection}
-                        onChange={(e) => setSelectedSection(e.target.value)}
-                        className="w-full px-3 py-1.5 bg-transparent border-none outline-none text-gray-700 text-sm cursor-pointer"
-                    >
-                        <option value="">كل الأقسام</option>
-                        {sections.map(section => (
-                            <option key={section.id} value={section.id}>
-                                {section.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                <FancySelect
+                    value={selectedSection}
+                    onChange={setSelectedSection}
+                    options={[{ label: "كل الأقسام", value: "" }, ...sections.map(s => ({ label: s.name, value: String(s.id) }))]}
+                    placeholder="اختر القسم"
+                    className="md:col-span-3"
+                />
 
-                {/* Author Filter - Takes 2 cols */}
-                <div className="md:col-span-2 bg-white rounded-lg border border-gray-200 shadow-sm">
-                    <select
-                        value={selectedAuthor}
-                        onChange={(e) => setSelectedAuthor(e.target.value)}
-                        className="w-full px-3 py-1.5 bg-transparent border-none outline-none text-gray-700 text-sm cursor-pointer"
-                    >
-                        <option value="">كل الكُتاب</option>
-                        {uniqueAuthors.map(author => (
-                            <option key={author} value={author}>
-                                {author}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                {/* Total Count - Takes 2 cols */}
-                <div className="md:col-span-2 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm flex flex-col justify-center items-center text-center">
-                    <span className="text-xs text-gray-500">إجمالي النتائج</span>
-                    <span className="text-lg font-bold text-primary">{filteredArticles.length}</span>
-                </div>
+                <FancySelect
+                    value={selectedAuthor}
+                    onChange={setSelectedAuthor}
+                    options={[{ label: "كل الكُتاب", value: "" }, ...uniqueAuthors.map(a => ({ label: a, value: a }))]}
+                    placeholder="اختر الكاتب"
+                    className="md:col-span-3"
+                />
             </div>
 
             {/* Table Section */}
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                <div className="px-6 py-4 bg-white border-b border-gray-200 flex items-center justify-between">
+                    <div className="inline-flex items-center gap-2 rounded-lg bg-primary/10 px-3 py-1.5">
+                        <FiSearch className="text-primary" />
+                        <span className="text-xs text-primary">إجمالي النتائج</span>
+                        <span className="text-lg font-bold text-primary">{filteredArticles.length}</span>
+                    </div>
+                </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-right">
                         <thead className="bg-gray-50 border-b border-gray-200">
@@ -409,7 +512,7 @@ export default function ArticlesPage() {
                                 هل أنت متأكد من حذف المقال:
                             </p>
                             <p className="font-semibold text-gray-900 mt-2 p-3 bg-gray-50 rounded-lg">
-                                "{deleteConfirm.title}"
+                                {deleteConfirm.title}
                             </p>
                         </div>
 

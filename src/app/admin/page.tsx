@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { FiUsers, FiFileText, FiActivity, FiTrendingUp, FiTrendingDown, FiBook, FiClock, FiCheckCircle, FiXCircle, FiInbox, FiRotateCw } from "react-icons/fi";
+import Link from "next/link";
 import { DashboardService } from "./services/dashboardService";
 import { DashboardSummary, SupportRequest, AnalyticsDataPoint } from "./models/dashboard";
 import VisitorsChart from "../../components/admin/VisitorsChart";
@@ -79,16 +80,93 @@ export default function AdminDashboard() {
 
     return (
         <div className="space-y-8">
-            {/* Page Title & Support Toggle */}
-            <div>
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div>
-                        <h1 className="text-2xl font-bold text-gray-800">لوحة التحكم</h1>
-                        <p className="text-gray-500 mt-1">أهلاً بك، نظرة عامة على إحصائيات المنصة.</p>
+            <section className="animated-hero relative overflow-hidden rounded-2xl p-6 md:p-8">
+                <div className="absolute inset-0 pointer-events-none hero-grid"></div>
+                <span className="hero-blob hero-blob-1"></span>
+                <span className="hero-blob hero-blob-2"></span>
+                <span className="hero-dot hero-dot-1"></span>
+                <span className="hero-dot hero-dot-2"></span>
+
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="max-w-2xl">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/70 backdrop-blur-md text-xs font-semibold text-gray-700">
+                            <FiActivity className="text-primary" />
+                            <span>لوحة تحليلات ذكية</span>
+                        </div>
+                        <h1 className="mt-3 text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
+                            إدارة احترافية بذكاء وحركة سلسة
+                        </h1>
+                        <p className="mt-2 text-gray-700">
+                            نظرة فورية على مؤشرات الأداء وطلبات الدعم.
+                        </p>
+                        <div className="mt-4 flex flex-wrap items-center gap-3">
+                            <Link href="/admin/support-individuals" className="inline-flex items-center gap-2 rounded-xl bg-primary text-white px-4 py-2 shadow-sm transition hover:shadow-md">
+                                إدارة طلبات الأفراد
+                            </Link>
+                            <Link href="/admin/support-institutions" className="inline-flex items-center gap-2 rounded-xl bg-secondary text-white px-4 py-2 shadow-sm transition hover:shadow-md">
+                                إدارة طلبات المؤسسات
+                            </Link>
+                        </div>
                     </div>
-                    <SupportToggle />
+                    <div className="flex-shrink-0">
+                        <SupportToggle />
+                    </div>
                 </div>
-            </div>
+
+                <div className="relative z-10 mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="rounded-xl bg-white/70 backdrop-blur-md p-4 shadow-sm">
+                        <div className="flex items-center justify-between">
+                            <div className="rounded-lg p-2 bg-primary/10">
+                                <FiActivity className="text-primary text-xl" />
+                            </div>
+                            {summary?.trends?.visits && (
+                                <span className={`text-xs font-semibold flex items-center gap-1 ${summary.trends.visits.includes("+") ? "text-green-600" : "text-red-600"}`}>
+                                    {summary.trends.visits} {summary.trends.visits.includes("+") ? <FiTrendingUp /> : <FiTrendingDown />}
+                                </span>
+                            )}
+                        </div>
+                        <p className="mt-3 text-xs text-gray-600">الزيارات اليوم</p>
+                        <p className="text-xl font-bold text-gray-800">{summary?.daily_visits ?? 0}</p>
+                    </div>
+                    <div className="rounded-xl bg-white/70 backdrop-blur-md p-4 shadow-sm">
+                        <div className="flex items-center justify-between">
+                            <div className="rounded-lg p-2 bg-secondary/10">
+                                <FiInbox className="text-secondary text-xl" />
+                            </div>
+                        </div>
+                        <p className="mt-3 text-xs text-gray-600">الطلبات المعلقة</p>
+                        <p className="text-xl font-bold text-gray-800">{summary?.pending_support_requests ?? 0}</p>
+                    </div>
+                    <div className="rounded-xl bg-white/70 backdrop-blur-md p-4 shadow-sm">
+                        <div className="flex items-center justify-between">
+                            <div className="rounded-lg p-2 bg-primary/10">
+                                <FiUsers className="text-primary text-xl" />
+                            </div>
+                            {summary?.trends?.users && (
+                                <span className={`text-xs font-semibold flex items-center gap-1 ${summary.trends.users.includes("+") ? "text-green-600" : "text-red-600"}`}>
+                                    {summary.trends.users} {summary.trends.users.includes("+") ? <FiTrendingUp /> : <FiTrendingDown />}
+                                </span>
+                            )}
+                        </div>
+                        <p className="mt-3 text-xs text-gray-600">عدد المستخدمين</p>
+                        <p className="text-xl font-bold text-gray-800">{summary?.total_users ?? 0}</p>
+                    </div>
+                    <div className="rounded-xl bg-white/70 backdrop-blur-md p-4 shadow-sm">
+                        <div className="flex items-center justify-between">
+                            <div className="rounded-lg p-2 bg-secondary/10">
+                                <FiFileText className="text-secondary text-xl" />
+                            </div>
+                            {summary?.trends?.articles && (
+                                <span className={`text-xs font-semibold flex items-center gap-1 ${summary.trends.articles.includes("+") ? "text-green-600" : "text-red-600"}`}>
+                                    {summary.trends.articles} {summary.trends.articles.includes("+") ? <FiTrendingUp /> : <FiTrendingDown />}
+                                </span>
+                            )}
+                        </div>
+                        <p className="mt-3 text-xs text-gray-600">عدد المقالات</p>
+                        <p className="text-xl font-bold text-gray-800">{summary?.total_articles ?? 0}</p>
+                    </div>
+                </div>
+            </section>
 
             {/* Support Stats Sections */}
             {supportStats && (
@@ -104,25 +182,26 @@ export default function AdminDashboard() {
                                 title="أجمالي الطلبات"
                                 value={supportStats.institutional.total}
                                 icon={<FiInbox />}
-                                color="bg-indigo-500"
+                                color="bg-secondary"
                             />
                             <StatCard
                                 title="تحت المراجعة"
                                 value={supportStats.institutional.under_review}
                                 icon={<FiRotateCw />}
-                                color="bg-yellow-500"
+                                color="bg-secondary"
                             />
                             <StatCard
                                 title="الطلبات المقبولة"
                                 value={supportStats.institutional.accepted}
                                 icon={<FiCheckCircle />}
-                                color="bg-green-500"
+                                color="bg-secondary"
+                                
                             />
                             <StatCard
                                 title="الطلبات المرفوضه"
                                 value={supportStats.institutional.rejected}
                                 icon={<FiXCircle />}
-                                color="bg-red-500"
+                                color="bg-secondary"
                             />
                         </div>
                     </div>
@@ -130,7 +209,7 @@ export default function AdminDashboard() {
                     {/* Individual Stats */}
                     <div className="space-y-4">
                         <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                            <span className="w-1 h-6 bg-purple-600 rounded-full"></span>
+                            <span className="w-1 h-6 bg-secondary rounded-full"></span>
                             إحصائيات نظام طلبات الدعم للأفراد
                         </h2>
                         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -138,25 +217,25 @@ export default function AdminDashboard() {
                                 title="أجمالي الطلبات"
                                 value={supportStats.individual.total}
                                 icon={<FiInbox />}
-                                color="bg-indigo-500"
+                                color="bg-primary"
                             />
                             <StatCard
                                 title="تحت المراجعة"
                                 value={supportStats.individual.under_review}
                                 icon={<FiRotateCw />}
-                                color="bg-yellow-500"
+                                color="bg-primary"
                             />
                             <StatCard
                                 title="الطلبات المقبولة"
                                 value={supportStats.individual.accepted}
                                 icon={<FiCheckCircle />}
-                                color="bg-green-500"
+                                color="bg-primary"
                             />
                             <StatCard
                                 title="الطلبات المرفوضه"
                                 value={supportStats.individual.rejected}
                                 icon={<FiXCircle />}
-                                color="bg-red-500"
+                                color="bg-primary"
                             />
                         </div>
                     </div>
@@ -186,7 +265,7 @@ export default function AdminDashboard() {
                         {recentRequests.map((req) => (
                             <div key={req.id} className="flex items-center gap-4 border-b border-gray-50 pb-3 last:border-0 hover:bg-gray-50 p-2 rounded-lg transition-colors">
                                 <div className={`h-10 w-10 min-h-[2.5rem] min-w-[2.5rem] rounded-full flex items-center justify-center text-white font-bold
-                  ${req.status === 'pending' ? 'bg-yellow-500' : req.status === 'approved' ? 'bg-green-500' : 'bg-red-500'}
+                  ${req.status === 'pending' ? 'bg-primary' : req.status === 'approved' ? 'bg-green-500' : 'bg-red-500'}
                 `}>
                                     {req.applicant_name.charAt(0)}
                                 </div>
@@ -197,7 +276,7 @@ export default function AdminDashboard() {
                                     </p>
                                 </div>
                                 <div>
-                                    {req.status === 'pending' && <FiClock className="text-yellow-500" />}
+                                    {req.status === 'pending' && <FiClock className="text-secondary" />}
                                     {req.status === 'approved' && <FiCheckCircle className="text-green-500" />}
                                     {req.status === 'rejected' && <FiXCircle className="text-red-500" />}
                                 </div>

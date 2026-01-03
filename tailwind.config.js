@@ -7,8 +7,8 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                primary: "#cd9933", // Gold/Bronze from existing site (approx)
-                secondary: "#1f2937",
+                primary: "#385F58",
+                secondary: "#9E9077",
             },
         },
     },

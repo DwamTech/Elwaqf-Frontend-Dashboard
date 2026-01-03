@@ -119,99 +119,157 @@ export default function IndividualRequestsPage() {
                 </div>
             </div>
 
-            {/* Requests List */}
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-right">
-                        <thead className="bg-gray-50 border-b border-gray-200">
-                            <tr>
-                                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">رقم الطلب</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">الاسم</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">الهاتف</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">الحالة</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">تاريخ التقديم</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">إجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                            {loading ? (
+                <div className="hidden md:block">
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-right">
+                            <thead className="bg-gray-50 border-b border-gray-200">
                                 <tr>
-                                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
-                                        جاري التحميل...
-                                    </td>
+                                    <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">رقم الطلب</th>
+                                    <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">الاسم</th>
+                                    <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">الهاتف</th>
+                                    <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">الحالة</th>
+                                    <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">تاريخ التقديم</th>
+                                    <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">إجراءات</th>
                                 </tr>
-                            ) : requests.length === 0 ? (
-                                <tr>
-                                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
-                                        لا توجد طلبات
-                                    </td>
-                                </tr>
-                            ) : (
-                                requests.map((request) => (
-                                    <tr key={request.id} className="hover:bg-gray-50/50 transition-colors">
-                                        <td className="px-6 py-4">
-                                            <span className="text-sm font-mono text-gray-900 font-medium">
-                                                {request.request_number}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2">
-                                                <FiUser className="text-gray-400" size={14} />
-                                                <span className="text-sm text-gray-900">{request.full_name}</span>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2">
-                                                <FiPhone className="text-gray-400" size={14} />
-                                                <span className="text-sm text-gray-600 font-mono">{request.phone_number}</span>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <StatusBadge status={request.status} />
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2">
-                                                <FiCalendar className="text-gray-400" size={14} />
-                                                <span className="text-sm text-gray-600">
-                                                    {new Date(request.created_at).toLocaleDateString('ar-EG')}
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2">
-                                                <a
-                                                    href={`tel:${request.phone_number}`}
-                                                    className="p-2 text-green-600 hover:bg-green-50 rounded-md transition-colors"
-                                                    title="اتصال"
-                                                >
-                                                    <FiPhone size={16} />
-                                                </a>
-                                                <a
-                                                    href={`https://wa.me/${request.phone_number.replace(/[^0-9]/g, '')}`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="p-2 text-green-600 hover:bg-green-50 rounded-md transition-colors"
-                                                    title="واتساب"
-                                                >
-                                                    <FaWhatsapp size={16} />
-                                                </a>
-                                                <Link
-                                                    href={`/admin/support-individuals/${request.id}`}
-                                                    className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
-                                                >
-                                                    <FiEye size={16} />
-                                                    عرض التفاصيل
-                                                </Link>
-                                            </div>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100">
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                                            جاري التحميل...
                                         </td>
                                     </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
+                                ) : requests.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                                            لا توجد طلبات
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    requests.map((request) => (
+                                        <tr key={request.id} className="hover:bg-gray-50/50 transition-colors">
+                                            <td className="px-6 py-4">
+                                                <span className="text-sm font-mono text-gray-900 font-medium">
+                                                    {request.request_number}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-2">
+                                                    <FiUser className="text-gray-400" size={14} />
+                                                    <span className="text-sm text-gray-900">{request.full_name}</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-2">
+                                                    <FiPhone className="text-gray-400" size={14} />
+                                                    <span className="text-sm text-gray-600 font-mono">{request.phone_number}</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <StatusBadge status={request.status} />
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-2">
+                                                    <FiCalendar className="text-gray-400" size={14} />
+                                                    <span className="text-sm text-gray-600">
+                                                        {new Date(request.created_at).toLocaleDateString('ar-EG')}
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-2">
+                                                    <a
+                                                        href={`tel:${request.phone_number}`}
+                                                        className="p-2 text-green-600 hover:bg-green-50 rounded-md transition-colors"
+                                                        title="اتصال"
+                                                    >
+                                                        <FiPhone size={16} />
+                                                    </a>
+                                                    <a
+                                                        href={`https://wa.me/${request.phone_number.replace(/[^0-9]/g, '')}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="p-2 text-green-600 hover:bg-green-50 rounded-md transition-colors"
+                                                        title="واتساب"
+                                                    >
+                                                        <FaWhatsapp size={16} />
+                                                    </a>
+                                                    <Link
+                                                        href={`/admin/support-individuals/${request.id}`}
+                                                        className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+                                                    >
+                                                        <FiEye size={16} />
+                                                        عرض التفاصيل
+                                                    </Link>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-
-                {/* Pagination */}
+                <div className="p-3 md:hidden">
+                    {loading ? (
+                        <div className="px-3 py-6 text-center text-gray-500">جاري التحميل...</div>
+                    ) : requests.length === 0 ? (
+                        <div className="px-3 py-6 text-center text-gray-500">لا توجد طلبات</div>
+                    ) : (
+                        <div className="grid grid-cols-1 gap-3">
+                            {requests.map((request) => (
+                                <div key={request.id} className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="text-sm font-mono text-gray-900 font-medium">{request.request_number}</span>
+                                        <StatusBadge status={request.status} />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <div className="flex items-center gap-2">
+                                            <FiUser className="text-gray-400" size={14} />
+                                            <span className="text-sm text-gray-900">{request.full_name}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <FiPhone className="text-gray-400" size={14} />
+                                            <span className="text-sm text-gray-600 font-mono">{request.phone_number}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <FiCalendar className="text-gray-400" size={14} />
+                                            <span className="text-sm text-gray-600">
+                                                {new Date(request.created_at).toLocaleDateString('ar-EG')}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-2 mt-3">
+                                        <a
+                                            href={`tel:${request.phone_number}`}
+                                            className="p-2 text-green-600 hover:bg-green-50 rounded-md transition-colors"
+                                            title="اتصال"
+                                        >
+                                            <FiPhone size={16} />
+                                        </a>
+                                        <a
+                                            href={`https://wa.me/${request.phone_number.replace(/[^0-9]/g, '')}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="p-2 text-green-600 hover:bg-green-50 rounded-md transition-colors"
+                                            title="واتساب"
+                                        >
+                                            <FaWhatsapp size={16} />
+                                        </a>
+                                        <Link
+                                            href={`/admin/support-individuals/${request.id}`}
+                                            className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+                                        >
+                                            <FiEye size={16} />
+                                            عرض التفاصيل
+                                        </Link>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
                 <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex items-center justify-between">
                     <span className="text-sm text-gray-500">
                         عرض الصفحة {currentPage} من {totalPages}

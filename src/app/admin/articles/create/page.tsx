@@ -1,11 +1,89 @@
 "use client";
 
-import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import React, { useState, useEffect, ChangeEvent, FormEvent, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ArticleService } from "../../services/articleService";
 import { SectionService, Section } from "../../services/sectionService";
-import { FiSave, FiImage, FiType, FiUser, FiCalendar, FiTag, FiLayers, FiFileText, FiPlus } from "react-icons/fi";
+import { FiSave, FiImage, FiType, FiUser, FiCalendar, FiTag, FiLayers, FiFileText, FiPlus, FiSearch, FiChevronDown, FiCheck } from "react-icons/fi";
 import { useToast } from "@/components/admin/ToastProvider";
+
+type FancySelectOption = { label: string; value: string };
+
+function FancySelect({
+    value,
+    onChange,
+    options,
+    placeholder,
+    className
+}: {
+    value: string;
+    onChange: (v: string) => void;
+    options: FancySelectOption[];
+    placeholder: string;
+    className?: string;
+}) {
+    const [open, setOpen] = useState(false);
+    const [query, setQuery] = useState("");
+    const ref = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        const onDocClick = (e: MouseEvent) => {
+            if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+        };
+        document.addEventListener("mousedown", onDocClick);
+        return () => document.removeEventListener("mousedown", onDocClick);
+    }, []);
+
+    const selectedLabel = options.find(o => o.value === value)?.label || "";
+    const filtered = options.filter(o => o.label.toLowerCase().includes(query.toLowerCase()));
+
+    return (
+        <div ref={ref} className={`relative ${className || ""}`}>
+            <button
+                type="button"
+                onClick={() => setOpen(v => !v)}
+                className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm text-gray-700 flex items-center justify-between hover:border-primary/40 hover:shadow transition"
+            >
+                <span className={`line-clamp-1 ${selectedLabel ? "text-gray-800" : "text-gray-400"}`}>
+                    {selectedLabel || placeholder}
+                </span>
+                <FiChevronDown className="text-gray-400" />
+            </button>
+            {open && (
+                <div className="absolute z-50 mt-2 w-full bg-white border border-gray-100 rounded-xl shadow-lg overflow-hidden">
+                    <div className="flex items-center gap-2 px-3 py-2 border-b bg-gray-50">
+                        <FiSearch className="text-gray-400" size={14} />
+                        <input
+                            value={query}
+                            onChange={e => setQuery(e.target.value)}
+                            placeholder="بحث داخل الخيارات..."
+                            className="flex-1 bg-transparent outline-none text-xs text-gray-700"
+                        />
+                    </div>
+                    <ul className="max-h-56 overflow-y-auto admin-scrollbar">
+                        {filtered.map((opt) => (
+                            <li
+                                key={opt.value}
+                                onMouseDown={() => {
+                                    onChange(opt.value);
+                                    setOpen(false);
+                                    setQuery("");
+                                }}
+                                className={`px-3 py-2 text-sm cursor-pointer flex items-center justify-between hover:bg-gray-50 transition ${value === opt.value ? "bg-primary/5 text-gray-900" : "text-gray-700"}`}
+                            >
+                                <span className="line-clamp-1">{opt.label}</span>
+                                {value === opt.value && <FiCheck className="text-primary" />}
+                            </li>
+                        ))}
+                        {filtered.length === 0 && (
+                            <li className="px-3 py-3 text-xs text-gray-500">لا توجد نتائج مطابقة</li>
+                        )}
+                    </ul>
+                </div>
+            )}
+        </div>
+    );
+}
 
 export default function CreateArticlePage() {
     const router = useRouter();
@@ -244,29 +322,69 @@ export default function CreateArticlePage() {
 
     return (
         <div className="w-full max-w-6xl mx-auto space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-800">إضافة مقال جديد</h1>
-                    <p className="text-gray-500 text-sm mt-1">قم بملء البيانات التالية لإنشاء مقال جديد في النظام</p>
+            <section className="animated-hero relative overflow-hidden rounded-2xl p-6 md:p-8">
+                <div className="absolute inset-0 pointer-events-none hero-grid"></div>
+                <span className="hero-blob hero-blob-1"></span>
+                <span className="hero-blob hero-blob-2"></span>
+                <span className="hero-dot hero-dot-1"></span>
+                <span className="hero-dot hero-dot-2"></span>
+
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="max-w-2xl">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/70 backdrop-blur-md text-xs font-semibold text-gray-700">
+                            <FiFileText className="text-primary" />
+                            <span>إنشاء مقال جديد</span>
+                        </div>
+                        <h1 className="mt-3 text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
+                            ابدأ بصناعة محتوى احترافي
+                        </h1>
+                        <p className="mt-2 text-gray-700">
+                            أدخلي البيانات الأساسية، اختاري القسم والكاتب، وأضيفي صورة بارزة.
+                        </p>
+                        {/* <div className="mt-4 flex flex-wrap items-center gap-3">
+                            <a href="#article-form" className="inline-flex items-center gap-2 rounded-xl bg-primary text-white px-4 py-2 shadow-sm transition hover:shadow-md">
+                                البدء الآن
+                            </a>
+                        </div> */}
+                    </div>
+                    <div className="flex gap-3">
+                        <button
+                            type="button"
+                            onClick={() => router.back()}
+                            className="px-4 py-2 text-white bg-secondary rounded-lg hover:opacity-90 transition-colors"
+                        >
+                            رجوع
+                        </button>
+                        <button
+                            onClick={handleSubmit}
+                            disabled={loading}
+                            className="flex items-center gap-2 px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <FiSave size={18} />
+                            {loading ? "جاري الحفظ..." : "نشر المقال"}
+                        </button>
+                    </div>
                 </div>
-                <div className="flex gap-3">
-                    <button
-                        type="button"
-                        onClick={() => router.back()}
-                        className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                        إلغاء
-                    </button>
-                    <button
-                        onClick={handleSubmit}
-                        disabled={loading}
-                        className="flex items-center gap-2 px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        <FiSave size={18} />
-                        {loading ? "جاري الحفظ..." : "نشر المقال"}
-                    </button>
+
+                <div className="relative z-10 mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="rounded-xl bg-white/70 backdrop-blur-md p-4 shadow-sm">
+                        <p className="text-xs text-gray-600">الأقسام المتاحة</p>
+                        <p className="text-xl font-bold text-gray-800">{sections.length}</p>
+                    </div>
+                    <div className="rounded-xl bg-white/70 backdrop-blur-md p-4 shadow-sm">
+                        <p className="text-xs text-gray-600">الكتاب المسجّلون</p>
+                        <p className="text-xl font-bold text-gray-800">{authors.length}</p>
+                    </div>
+                    <div className="rounded-xl bg-white/70 backdrop-blur-md p-4 shadow-sm">
+                        <p className="text-xs text-gray-600">حالة النشر الحالية</p>
+                        <p className="text-xl font-bold text-gray-800">{status === "published" ? "منشور" : "مسودة"}</p>
+                    </div>
+                    <div className="rounded-xl bg-white/70 backdrop-blur-md p-4 shadow-sm">
+                        <p className="text-xs text-gray-600">تاريخ النشر</p>
+                        <p className="text-xl font-bold text-gray-800">{gregorianDate || "-"}</p>
+                    </div>
                 </div>
-            </div>
+            </section>
 
             {error && (
                 <div className="bg-red-50 text-red-600 p-4 rounded-lg border border-red-100 flex items-center">
@@ -280,7 +398,7 @@ export default function CreateArticlePage() {
                 </div>
             )}
 
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <form id="article-form" onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
                 {/* Main Content Column */}
                 <div className="lg:col-span-2 space-y-6">
@@ -359,14 +477,15 @@ export default function CreateArticlePage() {
 
                         <div className="space-y-2">
                             <label className="block text-sm font-medium text-gray-700">حالة النشر <span className="text-red-500">*</span></label>
-                            <select
+                            <FancySelect
                                 value={status}
-                                onChange={(e) => setStatus(e.target.value as "draft" | "published")}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all bg-white"
-                            >
-                                <option value="published">منشور (Published)</option>
-                                <option value="draft">مسودة (Draft)</option>
-                            </select>
+                                onChange={(v) => setStatus(v as "draft" | "published")}
+                                options={[
+                                    { label: "منشور (Published)", value: "published" },
+                                    { label: "مسودة (Draft)", value: "draft" },
+                                ]}
+                                placeholder="اختر حالة النشر"
+                            />
                         </div>
 
                         <div className="space-y-2">
@@ -396,36 +515,17 @@ export default function CreateArticlePage() {
                                 القسم
                                 <span className="text-red-500">*</span>
                             </label>
-                            <div className="border border-gray-200 rounded-lg bg-gray-50 overflow-hidden">
-                                {/* Scrollable List */}
-                                <div className="max-h-48 overflow-y-auto p-2 space-y-1 admin-scrollbar">
-                                    {sectionsLoading ? (
-                                        <p className="text-center text-xs text-gray-500 py-4">جاري تحميل الأقسام...</p>
-                                    ) : sections.length === 0 ? (
-                                        <p className="text-center text-xs text-gray-500 py-4">لا توجد أقسام, قم بإضافة واحد</p>
-                                    ) : (
-                                        sections.map((section) => (
-                                            <label
-                                                key={section.id}
-                                                className={`flex items-center gap-2 p-2 rounded-md hover:bg-white cursor-pointer transition-all border ${sectionId === section.id ? 'bg-white border-primary shadow-sm' : 'border-transparent'}`}
-                                            >
-                                                <input
-                                                    type="radio"
-                                                    name="section"
-                                                    value={section.id}
-                                                    checked={sectionId === section.id}
-                                                    onChange={() => setSectionId(section.id)}
-                                                    className="accent-primary w-4 h-4"
-                                                />
-                                                <span className={`text-sm ${sectionId === section.id ? 'text-primary font-medium' : 'text-gray-600'}`}>
-                                                    {section.name}
-                                                </span>
-                                            </label>
-                                        ))
-                                    )}
-                                </div>
-                                {/* Add New Section */}
-                                <div className="border-t border-gray-200 p-2 bg-gray-100">
+                            <FancySelect
+                                value={sectionId ? String(sectionId) : ""}
+                                onChange={(v) => setSectionId(v ? Number(v) : "")}
+                                options={[
+                                    { label: "اختر القسم", value: "" },
+                                    ...sections.map(s => ({ label: s.name, value: String(s.id) }))
+                                ]}
+                                placeholder="اختر القسم"
+                            />
+                            <div className="border border-gray-200 rounded-lg mt-2">
+                                <div className="p-2 bg-gray-50 border-t border-gray-200">
                                     <div className="flex gap-2">
                                         <input
                                             type="text"
@@ -456,38 +556,15 @@ export default function CreateArticlePage() {
 
                         <div className="space-y-2">
                             <label className="block text-sm font-medium text-gray-700">اسم الكاتب <span className="text-red-500">*</span></label>
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    value={authorName}
-                                    onChange={handleAuthorChange}
-                                    onFocus={() => setShowAuthorsDropdown(true)}
-                                    onBlur={() => setTimeout(() => setShowAuthorsDropdown(false), 200)}
-                                    placeholder="ابدأ بكتابة اسم الكاتب..."
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all pl-10"
-                                    required
-                                    autoComplete="off"
-                                />
-                                <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-
-                                {/* Suggestions Dropdown */}
-                                {showAuthorsDropdown && filteredAuthors.length > 0 && (
-                                    <ul className="absolute z-50 w-full mt-1 bg-white border border-gray-100 rounded-lg shadow-lg max-h-48 overflow-y-auto admin-scrollbar">
-                                        {filteredAuthors.map((author, index) => (
-                                            <li
-                                                key={index}
-                                                onMouseDown={() => {
-                                                    // Using onMouseDown because onClick fires after onBlur
-                                                    handleAuthorSelect(author);
-                                                }}
-                                                className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm text-gray-700 transition-colors"
-                                            >
-                                                {author}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )}
-                            </div>
+                            <FancySelect
+                                value={authorName}
+                                onChange={(v) => setAuthorName(v)}
+                                options={[
+                                    { label: "اختر الكاتب", value: "" },
+                                    ...authors.map(a => ({ label: a, value: a }))
+                                ]}
+                                placeholder="اختر الكاتب"
+                            />
                         </div>
 
                         <div className="space-y-2">
