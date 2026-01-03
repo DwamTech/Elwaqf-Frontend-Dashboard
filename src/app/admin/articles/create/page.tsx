@@ -1,0 +1,544 @@
+"use client";
+
+import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { ArticleService } from "../../services/articleService";
+import { SectionService, Section } from "../../services/sectionService";
+import { FiSave, FiImage, FiType, FiUser, FiCalendar, FiTag, FiLayers, FiFileText, FiPlus } from "react-icons/fi";
+import { useToast } from "@/components/admin/ToastProvider";
+
+export default function CreateArticlePage() {
+    const router = useRouter();
+    const toast = useToast();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
+
+    // Form States
+    const [title, setTitle] = useState("");
+    const [slug, setSlug] = useState("");
+    const [content, setContent] = useState("");
+    const [authorName, setAuthorName] = useState("");
+    const [status, setStatus] = useState<"draft" | "published">("published");
+    const [sectionId, setSectionId] = useState<number | "">("");
+    const [excerpt, setExcerpt] = useState("");
+    const [gregorianDate, setGregorianDate] = useState("");
+    const [keywords, setKeywords] = useState("");
+    const [featuredImage, setFeaturedImage] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [isSlugTouched, setIsSlugTouched] = useState(false);
+
+    // Section Logic
+    const [sections, setSections] = useState<Section[]>([]);
+    const [sectionsLoading, setSectionsLoading] = useState(false);
+    const [newSectionName, setNewSectionName] = useState("");
+    const [isAddingSection, setIsAddingSection] = useState(false);
+
+    // Author Logic
+    const [authors, setAuthors] = useState<string[]>([]);
+    const [filteredAuthors, setFilteredAuthors] = useState<string[]>([]);
+    const [showAuthorsDropdown, setShowAuthorsDropdown] = useState(false);
+
+    useEffect(() => {
+        fetchSections();
+        fetchAuthors();
+    }, []);
+
+    const fetchAuthors = async () => {
+        try {
+            const data = await ArticleService.getAuthors();
+            setAuthors(data);
+            setFilteredAuthors(data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleAuthorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setAuthorName(value);
+        setShowAuthorsDropdown(true);
+
+        const filtered = authors.filter(author =>
+            author.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredAuthors(filtered);
+    };
+
+    const handleAuthorSelect = (author: string) => {
+        setAuthorName(author);
+        setShowAuthorsDropdown(false);
+    };
+
+
+    const fetchSections = async () => {
+        setSectionsLoading(true);
+        try {
+            const data = await SectionService.getAll();
+            setSections(data);
+            return data;
+        } catch (err) {
+            console.error("Failed to load sections", err);
+            return [];
+        } finally {
+            setSectionsLoading(false);
+        }
+    };
+
+    const handleAddSection = async () => {
+        const nameToAdd = newSectionName.trim();
+        if (!nameToAdd) return;
+
+        setIsAddingSection(true);
+        try {
+            await SectionService.create(nameToAdd);
+
+            // Re-fetch to guarantee we have the correct data from server
+            const updatedSections = await fetchSections();
+
+            // Find the newly added section by name (assuming uniqueness)
+            const createdSection = updatedSections.find(s => s.name === nameToAdd);
+
+            if (createdSection) {
+                setSectionId(createdSection.id);
+            }
+
+            setNewSectionName("");
+        } catch (err: any) {
+            console.error(err);
+            toast.error(err.message || "فشل إضافة القسم");
+        } finally {
+            setIsAddingSection(false);
+        }
+    };
+
+    // Helpers
+    // Helpers
+    const slugify = (text: string) => {
+        return text
+            .toString()
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, '-')           // Replace spaces with -
+            // Keep: Arabic letters (\p{L}), English letters, Numbers (\p{N}), - and _
+            // Remove: Everything else
+            .replace(/[^\p{L}\p{N}\-_]+/gu, '')
+            .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+            .replace(/^-+/, '')             // Trim - from start of text
+            .replace(/-+$/, '');            // Trim - from end of text
+    };
+
+    const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const val = e.target.value;
+        setTitle(val);
+
+        // Auto-generate slug if it hasn't been manually touched (basic assumption)
+        // Note: isSlugTouched state will be added in next step
+        // For now, check if slug is empty or matches previous slugified title
+        const currentSlugified = slugify(val);
+        // Better to wait for state variable, but let's assume we have access or will add it. 
+        // Since I'm splitting edits, I'll refer to state that isn't there yet? No, that causes error.
+        // I will optimistically add the state `useRef` or just `useState` in the other edit.
+        // Actually, let's just use the `isSlugTouched` variable assuming I add it.
+        if (!isSlugTouched) {
+            setSlug(currentSlugified);
+        }
+    };
+
+    const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setFeaturedImage(file);
+            setImagePreview(URL.createObjectURL(file));
+        }
+    };
+
+    // Smart Publish Logic
+    const getTodayDate = () => {
+        const today = new Date();
+        return today.toISOString().split('T')[0];
+    };
+
+    const isFutureDate = (date: string) => {
+        if (!date) return false;
+        const selectedDate = new Date(date);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        selectedDate.setHours(0, 0, 0, 0);
+        return selectedDate > today;
+    };
+
+    // Auto-set today's date when status changes to "published" if no date or future date
+    useEffect(() => {
+        if (status === 'published') {
+            if (!gregorianDate || isFutureDate(gregorianDate)) {
+                setGregorianDate(getTodayDate());
+            }
+        }
+    }, [status, gregorianDate]);
+
+    // Auto-convert to draft if future date is selected with published status
+    const handleDateChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const newDate = e.target.value;
+        setGregorianDate(newDate);
+
+        // If published and date is in the future, auto-convert to draft
+        if (status === 'published' && isFutureDate(newDate)) {
+            setStatus('draft');
+            toast.warning('تم تحويل المقال إلى مسودة تلقائياً لأن تاريخ النشر مستقبلي');
+        }
+    };
+
+    const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
+        setSuccess(null);
+
+        // Validation
+        const missingFields = [];
+        if (!title) missingFields.push("عنوان المقال");
+        if (!slug) missingFields.push("الرابط الدائم");
+        if (!content) missingFields.push("محتوى المقال");
+        if (!authorName) missingFields.push("اسم الكاتب");
+        if (!sectionId) missingFields.push("القسم");
+
+        if (missingFields.length > 0) {
+            setError(`يرجى ملء الحقول الإلزامية المفقودة: ${missingFields.join("، ")}`);
+            setLoading(false);
+            window.scrollTo(0, 0);
+            return;
+        }
+
+        try {
+            const formData = new FormData();
+            formData.append("title", title);
+            formData.append("slug", slug);
+            formData.append("content", content);
+            formData.append("author_name", authorName);
+            formData.append("status", status);
+
+            if (sectionId) formData.append("section_id", String(sectionId));
+            if (featuredImage) formData.append("featured_image", featuredImage);
+            if (excerpt) formData.append("excerpt", excerpt);
+            if (gregorianDate) formData.append("gregorian_date", gregorianDate);
+            if (keywords) formData.append("keywords", keywords);
+
+            await ArticleService.create(formData);
+
+            setSuccess("تم إنشاء المقال بنجاح!");
+
+            // Wait a moment then redirect or reset
+            setTimeout(() => {
+                router.push("/admin/articles");
+            }, 1000);
+
+        } catch (err: any) {
+            console.error(err);
+            setError(err.message || "حدث خطأ أثناء إنشاء المقال");
+            window.scrollTo(0, 0);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="w-full max-w-6xl mx-auto space-y-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-800">إضافة مقال جديد</h1>
+                    <p className="text-gray-500 text-sm mt-1">قم بملء البيانات التالية لإنشاء مقال جديد في النظام</p>
+                </div>
+                <div className="flex gap-3">
+                    <button
+                        type="button"
+                        onClick={() => router.back()}
+                        className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                        إلغاء
+                    </button>
+                    <button
+                        onClick={handleSubmit}
+                        disabled={loading}
+                        className="flex items-center gap-2 px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <FiSave size={18} />
+                        {loading ? "جاري الحفظ..." : "نشر المقال"}
+                    </button>
+                </div>
+            </div>
+
+            {error && (
+                <div className="bg-red-50 text-red-600 p-4 rounded-lg border border-red-100 flex items-center">
+                    <span className="font-medium">خطأ:</span>&nbsp;{error}
+                </div>
+            )}
+
+            {success && (
+                <div className="bg-green-50 text-green-600 p-4 rounded-lg border border-green-100 flex items-center">
+                    <span className="font-medium">نجاح:</span>&nbsp;{success}
+                </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                {/* Main Content Column */}
+                <div className="lg:col-span-2 space-y-6">
+                    {/* Basic Info */}
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 space-y-4">
+                        <h2 className="text-lg font-semibold text-gray-800 border-b pb-3 mb-4 flex items-center gap-2">
+                            <FiFileText className="text-primary" />
+                            بيانات المقال الأساسية
+                        </h2>
+
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700">عنوان المقال <span className="text-red-500">*</span></label>
+                            <input
+                                type="text"
+                                value={title}
+                                onChange={handleTitleChange}
+                                placeholder="أدخل عنوان المقال هنا..."
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                                required
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700">الرابط الدائم (Slug) <span className="text-red-500">*</span></label>
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    value={slug}
+                                    onChange={(e) => {
+                                        setSlug(e.target.value);
+                                        setIsSlugTouched(true);
+                                    }}
+                                    placeholder="رابط-المقال-text-here"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-right focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                                    required
+                                />
+                            </div>
+                            <p className="text-xs text-gray-400">يستخدم في رابط الصفحة URL. يجب أن يكون بالإنجليزية وبدون مسافات.</p>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700">محتوى المقال <span className="text-red-500">*</span></label>
+                            <textarea
+                                value={content}
+                                onChange={(e) => setContent(e.target.value)}
+                                rows={15}
+                                placeholder="أدخل محتوى المقال هنا (HTML مدعوم)..."
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-mono text-sm"
+                                required
+                            />
+                            <p className="text-xs text-gray-400">يمكنك كتابة كود HTML أو نص عادي.</p>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700">مقتطف قصير (Excerpt)</label>
+                            <textarea
+                                value={excerpt}
+                                onChange={(e) => setExcerpt(e.target.value)}
+                                rows={3}
+                                placeholder="وصف قصير يظهر في البطاقات ومحركات البحث..."
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Sidebar Column */}
+                <div className="space-y-6">
+
+                    {/* Publising Options */}
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 space-y-4">
+                        <h2 className="text-lg font-semibold text-gray-800 border-b pb-3 mb-4 flex items-center gap-2">
+                            <FiSave className="text-primary" />
+                            النشر
+                        </h2>
+
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700">حالة النشر <span className="text-red-500">*</span></label>
+                            <select
+                                value={status}
+                                onChange={(e) => setStatus(e.target.value as "draft" | "published")}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all bg-white"
+                            >
+                                <option value="published">منشور (Published)</option>
+                                <option value="draft">مسودة (Draft)</option>
+                            </select>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700">تاريخ النشر</label>
+                            <div className="relative">
+                                <input
+                                    type="date"
+                                    value={gregorianDate}
+                                    onChange={handleDateChange}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all pl-10"
+                                />
+                                <FiCalendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                            </div>
+                            <p className="text-xs text-gray-400">ملاحظة: يمكن نشر المقالات بتاريخ مستقبلي باعتباره مقال مجدول.</p>
+                        </div>
+                    </div>
+
+                    {/* Author & Categorization */}
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 space-y-4">
+                        <h2 className="text-lg font-semibold text-gray-800 border-b pb-3 mb-4 flex items-center gap-2">
+                            <FiLayers className="text-primary" />
+                            التصنيف والمؤلف
+                        </h2>
+
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700">
+                                القسم
+                                <span className="text-red-500">*</span>
+                            </label>
+                            <div className="border border-gray-200 rounded-lg bg-gray-50 overflow-hidden">
+                                {/* Scrollable List */}
+                                <div className="max-h-48 overflow-y-auto p-2 space-y-1 admin-scrollbar">
+                                    {sectionsLoading ? (
+                                        <p className="text-center text-xs text-gray-500 py-4">جاري تحميل الأقسام...</p>
+                                    ) : sections.length === 0 ? (
+                                        <p className="text-center text-xs text-gray-500 py-4">لا توجد أقسام, قم بإضافة واحد</p>
+                                    ) : (
+                                        sections.map((section) => (
+                                            <label
+                                                key={section.id}
+                                                className={`flex items-center gap-2 p-2 rounded-md hover:bg-white cursor-pointer transition-all border ${sectionId === section.id ? 'bg-white border-primary shadow-sm' : 'border-transparent'}`}
+                                            >
+                                                <input
+                                                    type="radio"
+                                                    name="section"
+                                                    value={section.id}
+                                                    checked={sectionId === section.id}
+                                                    onChange={() => setSectionId(section.id)}
+                                                    className="accent-primary w-4 h-4"
+                                                />
+                                                <span className={`text-sm ${sectionId === section.id ? 'text-primary font-medium' : 'text-gray-600'}`}>
+                                                    {section.name}
+                                                </span>
+                                            </label>
+                                        ))
+                                    )}
+                                </div>
+                                {/* Add New Section */}
+                                <div className="border-t border-gray-200 p-2 bg-gray-100">
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={newSectionName}
+                                            onChange={(e) => setNewSectionName(e.target.value)}
+                                            placeholder="أضف قسم جديد..."
+                                            className="flex-1 min-w-0 px-3 py-1.5 text-sm bg-white border border-gray-300 rounded-md focus:border-primary outline-none transition-colors"
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    e.preventDefault();
+                                                    handleAddSection();
+                                                }
+                                            }}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={handleAddSection}
+                                            disabled={isAddingSection || !newSectionName.trim()}
+                                            className="bg-white border border-gray-300 text-primary hover:bg-primary hover:text-white px-3 py-1.5 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                                            title="أضافة قسم"
+                                        >
+                                            {isAddingSection ? <span className="animate-spin h-4 w-4 rounded-full border-2 border-primary border-t-transparent"></span> : <FiPlus size={16} />}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700">اسم الكاتب <span className="text-red-500">*</span></label>
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    value={authorName}
+                                    onChange={handleAuthorChange}
+                                    onFocus={() => setShowAuthorsDropdown(true)}
+                                    onBlur={() => setTimeout(() => setShowAuthorsDropdown(false), 200)}
+                                    placeholder="ابدأ بكتابة اسم الكاتب..."
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all pl-10"
+                                    required
+                                    autoComplete="off"
+                                />
+                                <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+
+                                {/* Suggestions Dropdown */}
+                                {showAuthorsDropdown && filteredAuthors.length > 0 && (
+                                    <ul className="absolute z-50 w-full mt-1 bg-white border border-gray-100 rounded-lg shadow-lg max-h-48 overflow-y-auto admin-scrollbar">
+                                        {filteredAuthors.map((author, index) => (
+                                            <li
+                                                key={index}
+                                                onMouseDown={() => {
+                                                    // Using onMouseDown because onClick fires after onBlur
+                                                    handleAuthorSelect(author);
+                                                }}
+                                                className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm text-gray-700 transition-colors"
+                                            >
+                                                {author}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700">الكلمات المفتاحية</label>
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    value={keywords}
+                                    onChange={(e) => setKeywords(e.target.value)}
+                                    placeholder="اخبار, وقف, تعليم..."
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all pl-10"
+                                />
+                                <FiTag className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Featured Image */}
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 space-y-4">
+                        <h2 className="text-lg font-semibold text-gray-800 border-b pb-3 mb-4 flex items-center gap-2">
+                            <FiImage className="text-primary" />
+                            الصورة البارزة
+                        </h2>
+
+                        <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-primary transition-colors cursor-pointer relative bg-gray-50">
+                            <input
+                                type="file"
+                                onChange={handleImageChange}
+                                accept="image/*"
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                            />
+                            {imagePreview ? (
+                                <div className="relative aspect-video w-full overflow-hidden rounded-md">
+                                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                </div>
+                            ) : (
+                                <div className="py-8 text-gray-400 flex flex-col items-center">
+                                    <FiImage size={32} className="mb-2" />
+                                    <span className="text-sm">اضغط لاختيار صورة</span>
+                                    <span className="text-xs mt-1 text-gray-300">PNG, JPG, WEBP</span>
+                                </div>
+                            )}
+                        </div>
+                        {featuredImage && (
+                            <p className="text-xs text-gray-500 text-center truncate px-2">
+                                {featuredImage.name}
+                            </p>
+                        )}
+                    </div>
+                </div>
+            </form>
+        </div>
+    );
+}

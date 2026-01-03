@@ -2,75 +2,162 @@ import { DashboardSummary, AnalyticsDataPoint, SupportRequest, ApiResponse } fro
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
 
-// Mock Data
-const MOCK_SUMMARY: DashboardSummary = {
-    total_articles: 1245,
-    total_users: 854,
-    daily_visits: 3422,
-    pending_support_requests: 12,
-    total_books: 320,
-    trends: {
-        articles: "+2.5%",
-        users: "+1.2%",
-        visits: "-0.5%",
-    },
-};
-
-const MOCK_ANALYTICS: AnalyticsDataPoint[] = [
-    { date: "2025-12-24", visits: 120, requests: 5 },
-    { date: "2025-12-25", visits: 150, requests: 8 },
-    { date: "2025-12-26", visits: 110, requests: 2 },
-    { date: "2025-12-27", visits: 130, requests: 6 },
-    { date: "2025-12-28", visits: 180, requests: 12 },
-    { date: "2025-12-29", visits: 170, requests: 9 },
-    { date: "2025-12-30", visits: 190, requests: 15 },
-];
-
-const MOCK_REQUESTS: SupportRequest[] = [
-    {
-        id: 105,
-        type: "individual",
-        applicant_name: "أحمد محمد",
-        status: "pending",
-        created_at: "2025-12-30T10:30:00Z",
-    },
-    {
-        id: 104,
-        type: "institution",
-        applicant_name: "جمعية الأمل",
-        status: "approved",
-        created_at: "2025-12-29T15:20:00Z",
-    },
-    {
-        id: 103,
-        type: "individual",
-        applicant_name: "سارة علي",
-        status: "rejected",
-        created_at: "2025-12-28T09:15:00Z",
-    },
-];
-
 export const DashboardService = {
     getSummary: async (): Promise<DashboardSummary> => {
-        // Simulate API call
-        return new Promise((resolve) => {
-            setTimeout(() => resolve(MOCK_SUMMARY), 500);
+        const token = localStorage.getItem("token");
+        const res = await fetch(`${API_BASE_URL}/admin/dashboard/summary`, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
         });
-        // Real implementation:
-        // const res = await fetch(`${API_BASE_URL}/admin/dashboard/summary`);
-        // const json = await res.json();
-        // return json.data;
+        if (!res.ok) throw new Error("Failed to fetch summary");
+        const json = await res.json();
+        return json.data;
     },
 
     getAnalytics: async (period = "7d"): Promise<AnalyticsDataPoint[]> => {
-        return new Promise((resolve) => {
-            setTimeout(() => resolve(MOCK_ANALYTICS), 600);
+        const token = localStorage.getItem("token");
+        const res = await fetch(`${API_BASE_URL}/admin/dashboard/analytics?period=${period}`, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
         });
+        if (!res.ok) throw new Error("Failed to fetch analytics");
+        const json = await res.json();
+        return json.data;
     },
 
     getRecentRequests: async (): Promise<SupportRequest[]> => {
-        return new Promise((resolve) => {
-            setTimeout(() => resolve(MOCK_REQUESTS), 700);
+        const token = localStorage.getItem("token");
+        const res = await fetch(`${API_BASE_URL}/admin/support/pending`, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
         });
+        if (!res.ok) throw new Error("Failed to fetch recent requests");
+        const json = await res.json();
+
+        // The API returns { individual_requests: [], institutional_requests: [], count: n }
+        // We need to map them to SupportRequest[]
+
+        const individuals = (json.individual_requests || []).map((item: any) => ({
+            id: item.id,
+            type: 'individual' as const,
+            applicant_name: item.full_name,
+            status: item.status || 'pending',
+            created_at: item.created_at || new Date().toISOString(),
+            avatar_url: item.avatar_url
+        }));
+
+        const institutions = (json.institutional_requests || []).map((item: any) => ({
+            id: item.id,
+            type: 'institution' as const,
+            applicant_name: item.institution_name,
+            status: item.status || 'pending',
+            created_at: item.created_at || new Date().toISOString(),
+            avatar_url: item.logo_url
+        }));
+
+        // Combine and sort by date descending
+        const allRequests = [...individuals, ...institutions].sort((a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+
+        return allRequests;
+    },
+
+    updateAllSupportSettings: async (value: boolean): Promise<any> => {
+        const token = localStorage.getItem("token");
+        const res = await fetch(`${API_BASE_URL}/admin/support/settings/update-all`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({ value: String(value) }),
+        });
+        if (!res.ok) {
+            throw new Error("Failed to update settings");
+        }
+        return res.json();
+    },
+
+    getSupportSettings: async (): Promise<{ individual_support_enabled: boolean; institutional_support_enabled: boolean }> => {
+        const token = localStorage.getItem("token");
+        // Using the same endpoint with GET method as confirmed by the user
+        const res = await fetch(`${API_BASE_URL}/admin/support/settings/update-all`, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        });
+        if (!res.ok) throw new Error("Failed to fetch settings status");
+        const json = await res.json();
+        // The API returns the object directly or in a data wrapper. 
+        // User example: { "individual_support_enabled": true, ... }
+        // We return it as is or handle 'data'. Safer to return json directly if it matches user spec.
+        return json;
+    },
+
+    getPendingRequestsValues: async (): Promise<{
+        individual: {
+            pending: number;
+            review: number;
+            total_action_needed: number;
+        };
+        institutional: {
+            pending: number;
+            review: number;
+            total_action_needed: number;
+        };
+        total_pending: number;
+        total_review: number;
+    }> => {
+        const token = localStorage.getItem("token");
+        const res = await fetch(`${API_BASE_URL}/admin/dashboard/pending-requests-values`, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        });
+        if (!res.ok) throw new Error("Failed to fetch pending requests values");
+        const json = await res.json();
+        return json.data;
+    },
+
+    getSupportStats: async (): Promise<{
+        institutional: {
+            total: number;
+            under_review: number;
+            accepted: number;
+            rejected: number;
+        };
+        individual: {
+            total: number;
+            under_review: number;
+            accepted: number;
+            rejected: number;
+        };
+    }> => {
+        const token = localStorage.getItem("token");
+        const res = await fetch(`${API_BASE_URL}/admin/dashboard/support-stats`, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        });
+        if (!res.ok) throw new Error("Failed to fetch support stats");
+        const json = await res.json();
+        return json.data;
     },
 };
