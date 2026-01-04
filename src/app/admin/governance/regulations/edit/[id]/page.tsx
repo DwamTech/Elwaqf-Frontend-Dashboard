@@ -236,33 +236,44 @@ export default function EditRegulationPage() {
 
     return (
         <div className="w-full max-w-6xl mx-auto space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-800">تعديل اللائحة</h1>
-                    <p className="text-gray-500 text-sm mt-1">قم بتعديل البيانات التالية لتحديث اللائحة</p>
-                </div>
-                <div className="flex gap-3">
-                    <button
-                        type="button"
-                        onClick={() => router.back()}
-                        className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                        إلغاء
-                    </button>
-                    <button
-                        onClick={handleSubmit}
-                        disabled={loading}
-                        className="flex items-center gap-2 px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        <FiSave size={18} />
-                        {loading ? "جاري الحفظ..." : "حفظ التعديلات"}
-                    </button>
-                </div>
-            </div>
+            <section className="animated-hero relative overflow-hidden rounded-2xl p-6 md:p-8">
+                <div className="absolute inset-0 pointer-events-none hero-grid"></div>
+                <span className="hero-blob hero-blob-1"></span>
+                <span className="hero-blob hero-blob-2"></span>
+                <span className="hero-dot hero-dot-1"></span>
+                <span className="hero-dot hero-dot-2"></span>
 
+                <div className="relative z-10 flex items-center justify-between gap-6">
+                    <div className="flex items-center gap-3">
+                        <div>
+                            <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">تعديل اللائحة</h1>
+                            <p className="text-sm text-gray-700 mt-1">قم بتعديل البيانات التالية لتحديث اللائحة</p>
+                        </div>
+                    </div>
+                    <div className="flex gap-3">
+                        <button
+                            type="button"
+                            onClick={() => router.back()}
+                            className="px-4 py-2 text-gray-700 bg-white/70 backdrop-blur-md border border-white/60 rounded-lg hover:bg-white transition-colors shadow-sm"
+                        >
+                            إلغاء
+                        </button>
+                        <button
+                            onClick={handleSubmit}
+                            disabled={loading}
+                            className="flex items-center gap-2 px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                        >
+                            <FiSave size={18} />
+                            {loading ? "جاري الحفظ..." : "حفظ التعديلات"}
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            {/* Error/Success Messages */}
             {error && (
-                <div className="bg-red-50 text-red-600 p-4 rounded-lg border border-red-100 flex items-center">
-                    <span className="font-medium">خطأ:</span>&nbsp;{error}
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                    <strong>خطأ:</strong> {error}
                 </div>
             )}
 

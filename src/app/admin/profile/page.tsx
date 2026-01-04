@@ -123,30 +123,35 @@ export default function ProfilePage() {
     }
 
     return (
-        <div className="max-w-4xl mx-auto space-y-6">
-            {/* Header */}
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-                <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                        <FiUser className="text-primary" size={32} />
-                    </div>
-                    <div>
-                        <h1 className="text-2xl font-bold text-gray-800">إدارة حسابك</h1>
-                        <p className="text-sm text-gray-500 mt-1">تحديث معلوماتك الشخصية وكلمة المرور</p>
-                    </div>
-                </div>
+        <div className="w-full space-y-6">
+            <section className="animated-hero relative overflow-hidden rounded-2xl p-6 md:p-8">
+                <div className="absolute inset-0 pointer-events-none hero-grid"></div>
+                <span className="hero-blob hero-blob-1"></span>
+                <span className="hero-blob hero-blob-2"></span>
+                <span className="hero-dot hero-dot-1"></span>
+                <span className="hero-dot hero-dot-2"></span>
 
-                {user && (
-                    <div className="mt-4 pt-4 border-t border-gray-200">
-                        <div className="flex items-center gap-2">
-                            <span className="text-sm text-gray-500">الدور:</span>
-                            <span className={`px-3 py-1 rounded-full text-xs font-medium border ${UserService.getRoleColor(user.role)}`}>
-                                {UserService.getRoleLabel(user.role)}
-                            </span>
+                <div className="relative z-10 flex items-center justify-between gap-6">
+                    <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-lg bg-white/70 backdrop-blur-md flex items-center justify-center shadow-sm">
+                            <FiUser className="text-primary" size={24} />
+                        </div>
+                        <div>
+                            <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">إدارة حسابك</h1>
+                            <p className="text-sm text-gray-700 mt-1">تحديث معلوماتك الشخصية وكلمة المرور</p>
                         </div>
                     </div>
-                )}
-            </div>
+                </div>
+            </section>
+
+            {user && (
+                <div className="rounded-xl bg-white/70 backdrop-blur-md p-4 shadow-sm flex items-center gap-3">
+                    <span className="text-sm text-gray-700">الدور:</span>
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium border ${UserService.getRoleColor(user.role)}`}>
+                        {UserService.getRoleLabel(user.role)}
+                    </span>
+                </div>
+            )}
 
             {/* Tabs */}
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">

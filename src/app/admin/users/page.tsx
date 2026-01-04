@@ -224,51 +224,59 @@ export default function UsersManagementPage() {
     };
 
     return (
-        <div className="space-y-6">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-800">إدارة الحسابات</h1>
-                    <p className="text-gray-500 text-sm mt-1">إدارة المستخدمين والمشرفين</p>
-                </div>
-                <button
-                    onClick={openCreateModal}
-                    className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
-                >
-                    <FiPlus size={18} />
-                    <span>إضافة مستخدم</span>
-                </button>
-            </div>
+        <div className="w-full space-y-6">
+            <section className="animated-hero relative overflow-hidden rounded-2xl p-6 md:p-8">
+                <div className="absolute inset-0 pointer-events-none hero-grid"></div>
+                <span className="hero-blob hero-blob-1"></span>
+                <span className="hero-blob hero-blob-2"></span>
+                <span className="hero-dot hero-dot-1"></span>
+                <span className="hero-dot hero-dot-2"></span>
 
-            {/* Search & Filters */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
-                <div className="md:col-span-8 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm flex items-center">
-                    <FiSearch className="text-gray-400" size={16} />
-                    <input
-                        type="text"
-                        placeholder="بحث بالاسم أو البريد الإلكتروني..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="flex-1 bg-transparent border-none outline-none text-gray-700 placeholder-gray-400 px-3 text-sm"
-                    />
-                </div>
-
-                <div className="md:col-span-2 bg-white rounded-lg border border-gray-200 shadow-sm">
-                    <select
-                        value={selectedRole}
-                        onChange={(e) => setSelectedRole(e.target.value as UserRole | "")}
-                        className="w-full px-3 py-1.5 bg-transparent border-none outline-none text-gray-700 text-sm cursor-pointer"
+                <div className="relative z-10 flex items-center justify-between gap-6">
+                    <div>
+                        <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">إدارة الحسابات</h1>
+                        <p className="text-sm text-gray-700 mt-1">إدارة المستخدمين والمشرفين</p>
+                    </div>
+                    <button
+                        onClick={openCreateModal}
+                        className="flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
                     >
-                        <option value="">كل الأدوار</option>
-                        {roles.map(role => (
-                            <option key={role} value={role}>{UserService.getRoleLabel(role)}</option>
-                        ))}
-                    </select>
+                        <FiPlus size={18} />
+                        <span>إضافة مستخدم</span>
+                    </button>
                 </div>
+            </section>
 
-                <div className="md:col-span-2 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm flex flex-col justify-center items-center text-center">
-                    <span className="text-xs text-gray-500">إجمالي</span>
-                    <span className="text-lg font-bold text-primary">{filteredUsers.length}</span>
+            <div className="rounded-xl border border-gray-200 shadow-sm p-4 bg-gradient-to-r from-primary/50 to-secondary/10">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+                    <div className="md:col-span-8 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm flex items-center">
+                        <FiSearch className="text-gray-400" size={16} />
+                        <input
+                            type="text"
+                            placeholder="بحث بالاسم أو البريد الإلكتروني..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="flex-1 bg-transparent border-none outline-none text-gray-700 placeholder-gray-400 px-3 text-sm"
+                        />
+                    </div>
+
+                    <div className="md:col-span-2 bg-white rounded-lg border border-gray-200 shadow-sm">
+                        <select
+                            value={selectedRole}
+                            onChange={(e) => setSelectedRole(e.target.value as UserRole | "")}
+                            className="w-full px-3 py-1.5 bg-transparent border-none outline-none text-gray-700 text-sm cursor-pointer"
+                        >
+                            <option value="">كل الأدوار</option>
+                            {roles.map(role => (
+                                <option key={role} value={role}>{UserService.getRoleLabel(role)}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="md:col-span-2 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm flex flex-col justify-center items-center text-center">
+                        <span className="text-xs text-gray-500">إجمالي</span>
+                        <span className="text-lg font-bold text-primary">{filteredUsers.length}</span>
+                    </div>
                 </div>
             </div>
 

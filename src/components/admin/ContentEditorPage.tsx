@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { ContentService } from "@/app/admin/services/contentService";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import { FiSave, FiLoader } from "react-icons/fi";
@@ -9,9 +9,11 @@ interface ContentEditorPageProps {
     pageTitle: string;
     contentKey: string;
     description?: string;
+    hideHeader?: boolean;
+    saveRef?: React.MutableRefObject<(() => Promise<void>) | null>;
 }
 
-export default function ContentEditorPage({ pageTitle, contentKey, description }: ContentEditorPageProps) {
+export default function ContentEditorPage({ pageTitle, contentKey, description, hideHeader, saveRef }: ContentEditorPageProps) {
     const [content, setContent] = useState("");
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -34,7 +36,7 @@ export default function ContentEditorPage({ pageTitle, contentKey, description }
         }
     };
 
-    const handleSave = async () => {
+    const handleSave = useCallback(async () => {
         setSaving(true);
         try {
             await ContentService.update(contentKey, content);
@@ -45,7 +47,13 @@ export default function ContentEditorPage({ pageTitle, contentKey, description }
         } finally {
             setSaving(false);
         }
-    };
+    }, [contentKey, content, toast]);
+
+    useEffect(() => {
+        if (saveRef) {
+            saveRef.current = handleSave;
+        }
+    }, [saveRef, handleSave]);
 
     if (loading) return (
         <div className="flex items-center justify-center min-h-[400px]">
@@ -58,20 +66,22 @@ export default function ContentEditorPage({ pageTitle, contentKey, description }
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-800">{pageTitle}</h1>
-                    {description && <p className="text-gray-500 mt-1">{description}</p>}
+            {!hideHeader && (
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <div>
+                        <h1 className="text-2xl font-bold text-gray-800">{pageTitle}</h1>
+                        {description && <p className="text-gray-500 mt-1">{description}</p>}
+                    </div>
+                    <button
+                        onClick={handleSave}
+                        disabled={saving}
+                        className="flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-70 font-medium"
+                    >
+                        {saving ? <FiLoader className="animate-spin" /> : <FiSave />}
+                        {saving ? "جاري الحفظ..." : "حفظ التعديلات"}
+                    </button>
                 </div>
-                <button
-                    onClick={handleSave}
-                    disabled={saving}
-                    className="flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-70 font-medium"
-                >
-                    {saving ? <FiLoader className="animate-spin" /> : <FiSave />}
-                    {saving ? "جاري الحفظ..." : "حفظ التعديلات"}
-                </button>
-            </div>
+            )}
 
             <RichTextEditor value={content} onChange={setContent} />
         </div>

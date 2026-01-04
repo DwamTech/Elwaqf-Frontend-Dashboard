@@ -9,6 +9,7 @@ import { Cairo } from "next/font/google";
 import Sidebar from "../../components/admin/Sidebar";
 import Header from "../../components/admin/Header";
 import { ToastProvider } from "../../components/admin/ToastProvider";
+import AdminFooter from "../../components/admin/AdminFooter";
 
 const cairo = Cairo({
     subsets: ["arabic"],
@@ -81,6 +82,8 @@ export default function AdminLayout({
                                 <main className="flex-1 p-4 md:p-8 overflow-x-hidden">
                                     {children}
                                 </main>
+                                <div className="h-16 md:h-20"></div>
+                                <AdminFooter />
                             </div>
                         </div>
                     </PendingCountsProvider>

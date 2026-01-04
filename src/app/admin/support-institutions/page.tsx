@@ -4,12 +4,90 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { SupportService, SupportRequest } from "@/app/admin/services/supportService";
 import StatusBadge from "@/components/admin/StatusBadge";
-import { FiSearch, FiEye, FiUser, FiPhone, FiCalendar } from "react-icons/fi";
+import { FiSearch, FiEye, FiUser, FiPhone, FiCalendar, FiFilter, FiChevronDown, FiCheck } from "react-icons/fi";
 import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/admin/ToastProvider";
 import SupportToggle from "@/components/admin/SupportToggle";
 import { usePendingCounts } from "@/contexts/PendingCountsContext";
 import DataExportPanel from "@/components/admin/DataExportPanel";
+
+type FancySelectOption = { label: string; value: string };
+
+function FancySelect({
+    value,
+    onChange,
+    options,
+    placeholder,
+    className
+}: {
+    value: string;
+    onChange: (v: string) => void;
+    options: FancySelectOption[];
+    placeholder: string;
+    className?: string;
+}) {
+    const [open, setOpen] = useState(false);
+    const [query, setQuery] = useState("");
+    const ref = React.useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        const onDocClick = (e: MouseEvent) => {
+            if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+        };
+        document.addEventListener("mousedown", onDocClick);
+        return () => document.removeEventListener("mousedown", onDocClick);
+    }, []);
+
+    const selectedLabel = options.find(o => o.value === value)?.label || "";
+    const filtered = options.filter(o => o.label.toLowerCase().includes(query.toLowerCase()));
+
+    return (
+        <div ref={ref} className={`relative ${className || ""}`}>
+            <button
+                type="button"
+                onClick={() => setOpen(v => !v)}
+                className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm text-gray-700 flex items-center justify-between hover:border-primary/40 hover:shadow transition"
+            >
+                <span className={`line-clamp-1 ${selectedLabel ? "text-gray-800" : "text-gray-400"}`}>
+                    {selectedLabel || placeholder}
+                </span>
+                <FiChevronDown className="text-gray-400" />
+            </button>
+            {open && (
+                <div className="absolute z-50 mt-2 w-full bg-white border border-gray-100 rounded-xl shadow-lg overflow-hidden">
+                    <div className="flex items-center gap-2 px-3 py-2 border-b bg-gray-50">
+                        <FiSearch className="text-gray-400" size={14} />
+                        <input
+                            value={query}
+                            onChange={e => setQuery(e.target.value)}
+                            placeholder="بحث داخل الخيارات..."
+                            className="flex-1 bg-transparent outline-none text-xs text-gray-700"
+                        />
+                    </div>
+                    <ul className="max-h-56 overflow-y-auto admin-scrollbar">
+                        {filtered.map((opt) => (
+                            <li
+                                key={opt.value}
+                                onMouseDown={() => {
+                                    onChange(opt.value);
+                                    setOpen(false);
+                                    setQuery("");
+                                }}
+                                className={`px-3 py-2 text-sm cursor-pointer flex items-center justify-between hover:bg-gray-50 transition ${value === opt.value ? "bg-primary/5 text-gray-900" : "text-gray-700"}`}
+                            >
+                                <span className="line-clamp-1">{opt.label}</span>
+                                {value === opt.value && <FiCheck className="text-primary" />}
+                            </li>
+                        ))}
+                        {filtered.length === 0 && (
+                            <li className="px-3 py-3 text-xs text-gray-500">لا توجد نتائج مطابقة</li>
+                        )}
+                    </ul>
+                </div>
+            )}
+        </div>
+    );
+}
 
 export default function InstitutionalRequestsPage() {
     const toast = useToast();
@@ -110,14 +188,31 @@ export default function InstitutionalRequestsPage() {
 
     return (
         <div className="space-y-6">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-800">طلبات دعم المؤسسات</h1>
-                    <p className="text-gray-500 mt-1">إدارة ومتابعة طلبات الدعم المقدمة من المؤسسات والجمعيات</p>
+            <section className="animated-hero relative overflow-hidden rounded-2xl p-6 md:p-8">
+                <div className="absolute inset-0 pointer-events-none hero-grid"></div>
+                <span className="hero-blob hero-blob-1"></span>
+                <span className="hero-blob hero-blob-2"></span>
+                <span className="hero-dot hero-dot-1"></span>
+                <span className="hero-dot hero-dot-2"></span>
+
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="max-w-2xl">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/70 backdrop-blur-md text-xs font-semibold text-gray-700">
+                            <FiFilter className="text-primary" />
+                            <span>إدارة طلبات المؤسسات</span>
+                        </div>
+                        <h1 className="mt-3 text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
+                            متابعة احترافية لطلبات دعم المؤسسات
+                        </h1>
+                        <p className="mt-2 text-gray-700">
+                            ابحث وفلتر الطلبات بسرعة، وتابع الحالات بكل سهولة.
+                        </p>
+                    </div>
+                    <div className="flex-shrink-0">
+                        <SupportToggle />
+                    </div>
                 </div>
-                <SupportToggle />
-            </div>
+            </section>
 
             {/* Export Section */}
             <DataExportPanel
@@ -127,52 +222,58 @@ export default function InstitutionalRequestsPage() {
                 fileName="Institutional_Support_Report"
             />
 
-            {/* Filters */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
-                {/* Search */}
-                <div className="md:col-span-7 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm flex items-center">
-                    <FiSearch className="text-gray-400" size={16} />
-                    <input
-                        type="text"
-                        placeholder="بحث برقم الطلب، اسم المؤسسة، أو رقم الهاتف..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                        className="flex-1 bg-transparent border-none outline-none text-gray-700 placeholder-gray-400 px-3 text-sm"
-                    />
-                    <button
-                        onClick={handleSearch}
-                        className="px-3 py-1 bg-primary text-white rounded-md text-sm hover:bg-primary/90 transition-colors"
-                    >
-                        بحث
-                    </button>
-                </div>
+            {/* Filters - Grouped Section */}
+            <div id="filters" className="rounded-xl border border-gray-200 shadow-sm p-4 bg-gradient-to-r from-primary/50 to-secondary/10">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+                    <div className="md:col-span-7 flex items-center px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm bg-white">
+                        <FiSearch className="text-gray-400" size={16} />
+                        <input
+                            type="text"
+                            placeholder="بحث برقم الطلب، اسم المؤسسة، أو رقم الهاتف..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                            className="flex-1 bg-transparent border-none outline-none text-gray-700 placeholder-gray-400 px-3 text-sm"
+                        />
+                        <button
+                            onClick={handleSearch}
+                            className="px-3 py-1 bg-primary text-white rounded-md text-sm hover:bg-primary/90 transition-colors"
+                        >
+                            بحث
+                        </button>
+                    </div>
 
-                {/* Status Filter */}
-                <div className="md:col-span-4 bg-white rounded-lg border border-gray-200 shadow-sm">
-                    <select
+                    <FancySelect
+                        className="md:col-span-5"
                         value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                        className="w-full px-3 py-1.5 bg-transparent border-none outline-none text-gray-700 text-sm cursor-pointer"
-                    >
-                        <option value="">كل الحالات</option>
-                        <option value="pending">تحت المراجعة</option>
-                        <option value="waiting_for_documents">بانتظار المرفقات</option>
-                        <option value="documents_review">مراجعة المرفقات</option>
-                        <option value="completed">مكتمل</option>
-                        <option value="rejected">مرفوض</option>
-                        <option value="archived">مؤرشف</option>
-                    </select>
-                </div>
+                        onChange={setStatusFilter}
+                        options={[
+                            { label: "كل الحالات", value: "" },
+                            { label: "تحت المراجعة", value: "pending" },
+                            { label: "بانتظار المرفقات", value: "waiting_for_documents" },
+                            { label: "مراجعة المرفقات", value: "documents_review" },
+                            { label: "مكتمل", value: "completed" },
+                            { label: "مرفوض", value: "rejected" },
+                            { label: "مؤرشف", value: "archived" },
+                        ]}
+                        placeholder="اختر الحالة"
+                    />
 
-                {/* Total Count */}
-                <div className="md:col-span-1 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm flex flex-col justify-center items-center text-center">
-                    <span className="text-xs text-gray-500">النتائج</span>
-                    <span className="text-lg font-bold text-primary">{requests.length}</span>
+                    {/* <div className="md:col-span-1 px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm flex flex-col justify-center items-center text-center bg-white">
+                        <span className="text-xs text-gray-500">النتائج</span>
+                        <span className="text-lg font-bold text-primary">{requests.length}</span>
+                    </div> */}
                 </div>
             </div>
 
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                <div className="px-6 py-4 bg-white border-b border-gray-200 flex items-center justify-between">
+                    <div className="inline-flex items-center gap-2 rounded-lg bg-primary/10 px-3 py-1.5">
+                        <FiSearch className="text-primary" />
+                        <span className="text-xs text-primary">إجمالي النتائج</span>
+                        <span className="text-lg font-bold text-primary">{requests.length}</span>
+                    </div>
+                </div>
                 <div className="hidden md:block">
                     <div className="overflow-x-auto">
                         <table className="w-full text-right">

@@ -174,45 +174,62 @@ export default function RegulationsPage() {
     return (
         <div className="space-y-6">
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-800">إدارة اللوائح والسياسات</h1>
-                    <p className="text-gray-500 text-sm mt-1">عرض وإدارة جميع اللوائح المنشورة والمسودات</p>
+            <section className="animated-hero relative overflow-hidden rounded-2xl p-6 md:p-8">
+                <div className="absolute inset-0 pointer-events-none hero-grid"></div>
+                <span className="hero-blob hero-blob-1"></span>
+                <span className="hero-blob hero-blob-2"></span>
+                <span className="hero-dot hero-dot-1"></span>
+                <span className="hero-dot hero-dot-2"></span>
+
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="max-w-2xl">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/70 backdrop-blur-md text-xs font-semibold text-gray-700">
+                            <span>إدارة اللوائح والسياسات</span>
+                        </div>
+                        <h1 className="mt-3 text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
+                            تنظيم احترافي للوائح والسياسات
+                        </h1>
+                        <p className="mt-2 text-gray-700">
+                            ابحث وأدر اللوائح بسهولة مع تصميم أكثر أناقة.
+                        </p>
+                    </div>
+                    <div className="flex-shrink-0">
+                        <Link
+                            href="/admin/governance/regulations/create"
+                            className="flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
+                        >
+                            <FiPlus size={18} />
+                            <span>أضافة لائحة</span>
+                        </Link>
+                    </div>
                 </div>
-                <div className="flex gap-3">
-                    <Link
-                        href="/admin/governance/regulations/create"
-                        className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
-                    >
-                        <FiPlus size={18} />
-                        <span>أضافة لائحة</span>
-                    </Link>
-                </div>
-            </div>
+            </section>
 
             {/* Search & Filters */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
-                {/* Search Box - Takes 10 cols */}
-                <div className="md:col-span-10 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm flex items-center">
-                    <FiSearch className="text-gray-400" size={16} />
-                    <input
-                        type="text"
-                        placeholder="بحث عن لائحة بالعنوان أو الكاتب..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="flex-1 bg-transparent border-none outline-none text-gray-700 placeholder-gray-400 px-3 text-sm"
-                    />
-                </div>
+            <div className="rounded-xl border border-gray-200 shadow-sm p-4 bg-gradient-to-r from-primary/50 to-secondary/10">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+                    {/* Search Box - Takes 10 cols */}
+                    <div className="md:col-span-10 flex items-center px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm bg-white">
+                        <FiSearch className="text-gray-400" size={16} />
+                        <input
+                            type="text"
+                            placeholder="بحث عن لائحة بالعنوان أو الكاتب..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="flex-1 bg-transparent border-none outline-none text-gray-700 placeholder-gray-400 px-3 text-sm"
+                        />
+                    </div>
 
-                {/* Total Count - Takes 2 cols */}
-                <div className="md:col-span-2 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm flex flex-col justify-center items-center text-center">
-                    <span className="text-xs text-gray-500">إجمالي النتائج</span>
-                    <span className="text-lg font-bold text-primary">{filteredArticles.length}</span>
+                    {/* Total Count - Takes 2 cols */}
+                    <div className="md:col-span-2 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm flex flex-col justify-center items-center text-center">
+                        <span className="text-xs text-gray-500">إجمالي النتائج</span>
+                        <span className="text-lg font-bold text-primary">{filteredArticles.length}</span>
+                    </div>
                 </div>
             </div>
 
             {/* Table Section */}
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden transition hover:shadow-md">
                 <div className="overflow-x-auto">
                     <table className="w-full text-right">
                         <thead className="bg-gray-50 border-b border-gray-200">

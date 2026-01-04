@@ -210,31 +210,38 @@ export default function EditWaqfNewsPage() {
 
     return (
         <div className="w-full max-w-6xl mx-auto space-y-6 pb-20">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                    <button
-                        onClick={() => router.back()}
-                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                    >
-                        <FiArrowRight size={20} />
-                    </button>
-                    <div>
-                        <h1 className="text-2xl font-bold text-gray-800">تعديل الخبر</h1>
-                        <p className="text-gray-500 text-sm mt-1">تعديل ونشر أخبار الوقف</p>
+            <section className="animated-hero relative overflow-hidden rounded-2xl p-6 md:p-8">
+                <div className="absolute inset-0 pointer-events-none hero-grid"></div>
+                <span className="hero-blob hero-blob-1"></span>
+                <span className="hero-blob hero-blob-2"></span>
+                <span className="hero-dot hero-dot-1"></span>
+                <span className="hero-dot hero-dot-2"></span>
+
+                <div className="relative z-10 flex items-center justify-between gap-6">
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => router.back()}
+                            className="p-2 hover:bg-white rounded-lg transition-colors backdrop-blur-md bg-white/60 shadow-sm"
+                        >
+                            <FiArrowRight size={20} />
+                        </button>
+                        <div>
+                            <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">تعديل الخبر</h1>
+                            <p className="text-sm text-gray-700 mt-1">تعديل ونشر أخبار الوقف</p>
+                        </div>
+                    </div>
+                    <div className="flex gap-3">
+                        <button
+                            onClick={handleSubmit}
+                            disabled={loading}
+                            className="flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 font-medium shadow-sm"
+                        >
+                            <FiSave size={18} />
+                            {loading ? "جاري الحفظ..." : "حفظ التعديلات"}
+                        </button>
                     </div>
                 </div>
-                <div className="flex gap-3">
-                    <button
-                        onClick={handleSubmit}
-                        disabled={loading}
-                        className="flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 font-medium shadow-sm"
-                    >
-                        <FiSave size={18} />
-                        {loading ? "جاري الحفظ..." : "حفظ التعديلات"}
-                    </button>
-                </div>
-            </div>
+            </section>
 
             {error && (
                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center gap-2">

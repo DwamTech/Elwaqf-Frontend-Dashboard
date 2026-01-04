@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { FiUsers, FiFileText, FiActivity, FiTrendingUp, FiTrendingDown, FiBook, FiClock, FiCheckCircle, FiXCircle, FiInbox, FiRotateCw } from "react-icons/fi";
 import Link from "next/link";
+import Image from "next/image";
 import { DashboardService } from "./services/dashboardService";
 import { DashboardSummary, SupportRequest, AnalyticsDataPoint } from "./models/dashboard";
 import VisitorsChart from "../../components/admin/VisitorsChart";
@@ -89,13 +90,22 @@ export default function AdminDashboard() {
 
                 <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div className="max-w-2xl">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/70 backdrop-blur-md text-xs font-semibold text-gray-700">
-                            <FiActivity className="text-primary" />
-                            <span>لوحة تحليلات ذكية</span>
+                        <div className="mt-3 inline-flex items-center gap-3 px-3 py-2 rounded-xl bg-white/70 backdrop-blur-md shadow-sm">
+                            <span className="text-sm font-bold text-gray-800">إدارة</span>
+                            <Image
+                                src="/الوقف.png"
+                                alt="الوقف"
+                                width={250}
+                                height={24}
+                                style={{ width: 'auto', borderRadius: '10px' }}
+                                className="h-10 w-1000 object-contain"
+                                priority
+                            />
                         </div>
                         <h1 className="mt-3 text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
-                            إدارة احترافية بذكاء وحركة سلسة
+                           نظـام إدارة الأوقـاف
                         </h1>
+                        
                         <p className="mt-2 text-gray-700">
                             نظرة فورية على مؤشرات الأداء وطلبات الدعم.
                         </p>

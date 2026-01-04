@@ -130,35 +130,50 @@ export default function IndividualRequestDetailsPage() {
             </div>
 
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
-                <div className="flex items-center gap-3">
-                    <button
-                        onClick={() => router.back()}
-                        className="p-2 hover:bg-white rounded-full transition-colors text-gray-500"
-                    >
-                        <FiArrowRight size={24} />
-                    </button>
-                    <div>
-                        <div className="flex items-center gap-3">
-                            <h1 className="text-2xl font-bold text-gray-800">تفاصيل الطلب #{request.request_number}</h1>
-                            <StatusBadge status={request.status} />
+            <section className="animated-hero relative overflow-hidden rounded-2xl p-6 md:p-8 no-print">
+                <div className="absolute inset-0 pointer-events-none hero-grid"></div>
+                <span className="hero-blob hero-blob-1"></span>
+                <span className="hero-blob hero-blob-2"></span>
+                <span className="hero-dot hero-dot-1"></span>
+                <span className="hero-dot hero-dot-2"></span>
+
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => router.back()}
+                            className="p-2 bg-white/70 hover:bg-white rounded-full transition-colors text-gray-600 backdrop-blur-md shadow-sm"
+                            title="رجوع"
+                        >
+                            <FiArrowRight size={20} />
+                        </button>
+                        <div>
+                            <div className="flex items-center gap-3">
+                                <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">
+                                    تفاصيل الطلب #{request.request_number}
+                                </h1>
+                                <StatusBadge status={request.status} />
+                            </div>
+                            <p className="text-gray-700 text-sm mt-1">
+                                تاريخ التقديم: {new Date(request.created_at).toLocaleDateString('ar-EG')}
+                            </p>
                         </div>
-                        <p className="text-gray-500 text-sm mt-1">تاريخ التقديم: {new Date(request.created_at).toLocaleDateString('ar-EG')}</p>
+                    </div>
+
+                    <div className="flex-shrink-0">
+                        <ExportActions
+                            data={request}
+                            fieldMapping={exportFields}
+                            title={`تفاصيل طلب دعم أفراد - ${request.request_number}`}
+                            fileName={`Individual_Request_${request.request_number}`}
+                        />
                     </div>
                 </div>
-
-                <ExportActions
-                    data={request}
-                    fieldMapping={exportFields}
-                    title={`تفاصيل طلب دعم أفراد - ${request.request_number}`}
-                    fileName={`Individual_Request_${request.request_number}`}
-                />
-            </div>
+            </section>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Main Info */}
                 <div className="lg:col-span-2 space-y-6">
                     {/* Personal Information */}
-                    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 transition hover:shadow-md">
                         <h2 className="text-lg font-semibold text-gray-800 mb-4">المعلومات الشخصية</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="flex items-center gap-3">
@@ -238,7 +253,7 @@ export default function IndividualRequestDetailsPage() {
 
                     {/* Uploaded Documents */}
                     {(request.closure_receipt_path || request.project_report_path) && (
-                        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+                        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 transition hover:shadow-md">
                             <h2 className="text-lg font-semibold text-gray-800 mb-4">المرفقات المقدمة</h2>
                             <div className="space-y-3">
                                 {request.closure_receipt_path && (
@@ -277,7 +292,7 @@ export default function IndividualRequestDetailsPage() {
 
                 {/* Actions Sidebar */}
                 <div className="space-y-4">
-                    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-3">
+                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-3 transition hover:shadow-md">
                         <h3 className="font-semibold text-gray-800 mb-4">الإجراءات</h3>
 
                         {request.status === 'pending' && (

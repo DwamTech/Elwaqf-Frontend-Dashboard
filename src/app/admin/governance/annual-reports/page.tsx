@@ -92,40 +92,59 @@ export default function AnnualReportsPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-800">التقارير السنوية</h1>
-                    <p className="text-gray-500 text-sm mt-1">عرض وإدارة التقارير السنوية للوقف</p>
+            <section className="animated-hero relative overflow-hidden rounded-2xl p-6 md:p-8">
+                <div className="absolute inset-0 pointer-events-none hero-grid"></div>
+                <span className="hero-blob hero-blob-1"></span>
+                <span className="hero-blob hero-blob-2"></span>
+                <span className="hero-dot hero-dot-1"></span>
+                <span className="hero-dot hero-dot-2"></span>
+
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="max-w-2xl">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/70 backdrop-blur-md text-xs font-semibold text-gray-700">
+                            <span>إدارة التقارير السنوية</span>
+                        </div>
+                        <h1 className="mt-3 text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
+                            متابعة احترافية للتقارير السنوية
+                        </h1>
+                        <p className="mt-2 text-gray-700">
+                            ابحث وأدر التقارير بسهولة مع تصميم أكثر أناقة.
+                        </p>
+                    </div>
+                    <div className="flex-shrink-0">
+                        <Link
+                            href="/admin/governance/annual-reports/create"
+                            className="flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
+                        >
+                            <FiPlus size={18} />
+                            <span>إضافة تقرير سنوي</span>
+                        </Link>
+                    </div>
                 </div>
-                <Link
-                    href="/admin/governance/annual-reports/create"
-                    className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
-                >
-                    <FiPlus size={18} />
-                    <span>إضافة تقرير سنوي</span>
-                </Link>
-            </div>
+            </section>
 
             {/* Search */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
-                <div className="md:col-span-10 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm flex items-center">
-                    <FiSearch className="text-gray-400" size={16} />
-                    <input
-                        type="text"
-                        placeholder="بحث في التقارير السنوية..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="flex-1 bg-transparent border-none outline-none text-gray-700 placeholder-gray-400 px-3 text-sm"
-                    />
-                </div>
-                <div className="md:col-span-2 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm flex flex-col justify-center items-center text-center">
-                    <span className="text-xs text-gray-500">إجمالي</span>
-                    <span className="text-lg font-bold text-primary">{filteredDocuments.length}</span>
+            <div className="rounded-xl border border-gray-200 shadow-sm p-4 bg-gradient-to-r from-primary/50 to-secondary/10">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+                    <div className="md:col-span-10 flex items-center px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm bg-white">
+                        <FiSearch className="text-gray-400" size={16} />
+                        <input
+                            type="text"
+                            placeholder="بحث في التقارير السنوية..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="flex-1 bg-transparent border-none outline-none text-gray-700 placeholder-gray-400 px-3 text-sm"
+                        />
+                    </div>
+                    <div className="md:col-span-2 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm flex flex-col justify-center items-center text-center">
+                        <span className="text-xs text-gray-500">إجمالي</span>
+                        <span className="text-lg font-bold text-primary">{filteredDocuments.length}</span>
+                    </div>
                 </div>
             </div>
 
             {/* Table */}
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden transition hover:shadow-md">
                 <div className="overflow-x-auto">
                     <table className="w-full text-right">
                         <thead className="bg-gray-50 border-b border-gray-200">
