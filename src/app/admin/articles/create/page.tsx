@@ -116,6 +116,8 @@ export default function CreateArticlePage() {
     const [authors, setAuthors] = useState<string[]>([]);
     const [filteredAuthors, setFilteredAuthors] = useState<string[]>([]);
     const [showAuthorsDropdown, setShowAuthorsDropdown] = useState(false);
+    const [newAuthorName, setNewAuthorName] = useState("");
+    const [isAddingAuthor, setIsAddingAuthor] = useState(false);
 
     useEffect(() => {
         fetchSections();
@@ -146,6 +148,24 @@ export default function CreateArticlePage() {
     const handleAuthorSelect = (author: string) => {
         setAuthorName(author);
         setShowAuthorsDropdown(false);
+    };
+    const handleAddNewAuthor = () => {
+        const name = newAuthorName.trim();
+        if (!name) return;
+        const exists = authors.some(a => a.toLowerCase() === name.toLowerCase());
+        if (exists) {
+            setAuthorName(name);
+            setNewAuthorName("");
+            toast.warning('الكاتب موجود مسبقاً');
+            return;
+        }
+        setIsAddingAuthor(true);
+        setAuthors(prev => [name, ...prev]);
+        setFilteredAuthors(prev => [name, ...prev]);
+        setAuthorName(name);
+        setNewAuthorName("");
+        setIsAddingAuthor(false);
+        toast.success('تم إضافة كاتب جديد');
     };
 
 
@@ -565,6 +585,32 @@ export default function CreateArticlePage() {
                                 ]}
                                 placeholder="اختر الكاتب"
                             />
+                        </div>
+                        <div className="mt-2 border-t border-gray-200 pt-2">
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    value={newAuthorName}
+                                    onChange={(e) => setNewAuthorName(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            e.preventDefault();
+                                            handleAddNewAuthor();
+                                        }
+                                    }}
+                                    placeholder="أضف كاتباً جديداً..."
+                                    className="flex-1 min-w-0 px-3 py-1.5 text-sm bg-white border border-gray-300 rounded-md focus:border-primary outline-none transition-colors"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={handleAddNewAuthor}
+                                    disabled={isAddingAuthor || !newAuthorName.trim()}
+                                    className="bg-white border border-gray-300 text-primary hover:bg-primary hover:text-white px-3 py-1.5 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                                    title="أضافة كاتب"
+                                >
+                                    {isAddingAuthor ? <span className="animate-spin h-4 w-4 rounded-full border-2 border-primary border-t-transparent"></span> : <FiPlus size={16} />}
+                                </button>
+                            </div>
                         </div>
 
                         <div className="space-y-2">

@@ -1,10 +1,88 @@
 "use client";
 
-import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import React, { useState, useEffect, ChangeEvent, FormEvent, useRef } from "react";
 import { BookService } from "@/app/admin/services/bookService";
 import { SeriesService, Series } from "@/app/admin/services/seriesService";
-import { FiSave, FiImage, FiType, FiUser, FiBook, FiLink, FiUpload, FiPlus } from "react-icons/fi";
+import { FiSave, FiImage, FiType, FiUser, FiBook, FiLink, FiUpload, FiPlus, FiSearch, FiChevronDown, FiCheck } from "react-icons/fi";
 import { useToast } from "@/components/admin/ToastProvider";
+
+type FancySelectOption = { label: string; value: string };
+
+function FancySelect({
+    value,
+    onChange,
+    options,
+    placeholder,
+    className
+}: {
+    value: string;
+    onChange: (v: string) => void;
+    options: FancySelectOption[];
+    placeholder: string;
+    className?: string;
+}) {
+    const [open, setOpen] = useState(false);
+    const [query, setQuery] = useState("");
+    const ref = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        const onDocClick = (e: MouseEvent) => {
+            if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+        };
+        document.addEventListener("mousedown", onDocClick);
+        return () => document.removeEventListener("mousedown", onDocClick);
+    }, []);
+
+    const selectedLabel = options.find(o => o.value === value)?.label || "";
+    const filtered = options.filter(o => o.label.toLowerCase().includes(query.toLowerCase()));
+
+    return (
+        <div ref={ref} className={`relative ${className || ""}`}>
+            <button
+                type="button"
+                onClick={() => setOpen(v => !v)}
+                className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm text-gray-700 flex items-center justify-between hover:border-primary/40 hover:shadow transition"
+            >
+                <span className={`line-clamp-1 ${selectedLabel ? "text-gray-800" : "text-gray-400"}`}>
+                    {selectedLabel || placeholder}
+                </span>
+                <FiChevronDown className="text-gray-400" />
+            </button>
+            {open && (
+                <div className="absolute z-50 mt-2 w-full bg-white border border-gray-100 rounded-xl shadow-lg overflow-hidden">
+                    <div className="flex items-center gap-2 px-3 py-2 border-b bg-gray-50">
+                        <FiSearch className="text-gray-400" size={14} />
+                        <input
+                            value={query}
+                            onChange={e => setQuery(e.target.value)}
+                            placeholder="بحث داخل الخيارات..."
+                            className="flex-1 bg-transparent outline-none text-xs text-gray-700"
+                        />
+                    </div>
+                    <ul className="max-h-56 overflow-y-auto admin-scrollbar">
+                        {filtered.map((opt) => (
+                            <li
+                                key={opt.value}
+                                onMouseDown={() => {
+                                    onChange(opt.value);
+                                    setOpen(false);
+                                    setQuery("");
+                                }}
+                                className={`px-3 py-2 text-sm cursor-pointer flex items-center justify-between hover:bg-gray-50 transition ${value === opt.value ? "bg-primary/5 text-gray-900" : "text-gray-700"}`}
+                            >
+                                <span className="line-clamp-1">{opt.label}</span>
+                                {value === opt.value && <FiCheck className="text-primary" />}
+                            </li>
+                        ))}
+                        {filtered.length === 0 && (
+                            <li className="px-3 py-3 text-xs text-gray-500">لا توجد نتائج مطابقة</li>
+                        )}
+                    </ul>
+                </div>
+            )}
+        </div>
+    );
+}
 
 interface BookFormProps {
     mode: 'create' | 'edit';
@@ -303,18 +381,17 @@ export default function BookForm({ mode, bookId, onSuccess, onCancel }: BookForm
                         <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
 
                         {showAuthorDropdown && filteredAuthors.length > 0 && (
-                            <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                            <ul className="absolute z-50 w-full mt-1 bg-white border border-gray-100 rounded-xl shadow-lg max-h-48 overflow-y-auto admin-scrollbar">
                                 {filteredAuthors.map((author, idx) => (
-                                    <button
+                                    <li
                                         key={idx}
-                                        type="button"
-                                        onClick={() => selectAuthor(author)}
-                                        className="w-full px-4 py-2 text-right hover:bg-gray-50 text-sm text-gray-700"
+                                        onMouseDown={() => selectAuthor(author)}
+                                        className="px-3 py-2 text-sm cursor-pointer flex items-center justify-between hover:bg-gray-50 transition text-gray-700"
                                     >
-                                        {author}
-                                    </button>
+                                        <span className="line-clamp-1">{author}</span>
+                                    </li>
                                 ))}
-                            </div>
+                            </ul>
                         )}
                     </div>
                 </div>
@@ -504,16 +581,13 @@ export default function BookForm({ mode, bookId, onSuccess, onCancel }: BookForm
                     <div className="space-y-2">
                         <label className="block text-sm font-medium text-gray-700">اختر السلسلة *</label>
                         <div className="flex gap-2">
-                            <select
+                            <FancySelect
                                 value={selectedSeries}
-                                onChange={(e) => setSelectedSeries(e.target.value)}
-                                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
-                            >
-                                <option value="">اختر سلسلة</option>
-                                {series.map(s => (
-                                    <option key={s.id} value={s.id}>{s.name}</option>
-                                ))}
-                            </select>
+                                onChange={(v) => setSelectedSeries(v)}
+                                options={[{ label: "اختر سلسلة", value: "" }, ...series.map(s => ({ label: s.name, value: String(s.id) }))]}
+                                placeholder="اختر سلسلة"
+                                className="flex-1"
+                            />
                             <button
                                 type="button"
                                 onClick={() => setShowSeriesForm(!showSeriesForm)}

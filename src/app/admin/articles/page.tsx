@@ -240,11 +240,40 @@ export default function ArticlesPage() {
         }
     };
 
-    const totalCount = allArticles.length;
-    const publishedCount = allArticles.filter(a => a.status === "published").length;
-    const draftCount = allArticles.filter(a => a.status !== "published").length;
-    const sectionsCount = sections.length;
-    const authorsCount = Array.from(new Set(allArticles.map(a => a.author_name).filter(Boolean))).length;
+    const [showDemoRow, setShowDemoRow] = useState(true);
+    const [demoArticle, setDemoArticle] = useState({
+        id: -1,
+        title: 'مقال تجريبي',
+        slug: 'demo-article',
+        author_name: 'كاتب تجريبي',
+        section: { name: 'قسم تجريبي' },
+        status: 'published',
+        gregorian_date: '2026-01-01'
+    } as any);
+
+    const toggleStatusDemo = () => {
+        setDemoArticle(prev => {
+            const nextStatus = prev.status === 'published' ? 'draft' : 'published';
+            toast.success(`تم ${nextStatus === 'published' ? 'نشر' : 'إيقاف نشر'} المقال التجريبي`);
+            return { ...prev, status: nextStatus };
+        });
+    };
+
+    const handleDeleteDemo = () => {
+        setShowDemoRow(false);
+        toast.success('تم حذف المقال التجريبي');
+    };
+    const preDeleteDemo = () => {
+        toast.warning('سيتم حذف المقال التجريبي');
+        setTimeout(() => handleDeleteDemo(), 500);
+    };
+
+    const displayRows = filteredArticles.length > 0 ? filteredArticles : (showDemoRow ? [demoArticle] : []);
+    const totalCount = displayRows.length;
+    const publishedCount = displayRows.filter(a => a.status === "published").length;
+    const draftCount = displayRows.filter(a => a.status !== "published").length;
+    const sectionsCount = Array.from(new Set(displayRows.map(a => a.section?.name).filter(Boolean))).length;
+    const authorsCount = Array.from(new Set(displayRows.map(a => a.author_name).filter(Boolean))).length;
 
     return (
         <div className="space-y-6">
@@ -357,11 +386,86 @@ export default function ArticlesPage() {
                                     </td>
                                 </tr>
                             ) : filteredArticles.length === 0 ? (
+                                showDemoRow ? (
+                                <tr className="hover:bg-gray-50/50 transition-colors group">
+                                    <td className="px-6 py-4">
+                                        <div className="flex flex-col">
+                                            <span className="text-sm font-medium text-gray-800 line-clamp-1" title={demoArticle.title}>
+                                                {demoArticle.title}
+                                            </span>
+                                            <span className="text-xs text-gray-400 mt-0.5">{demoArticle.slug}</span>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 text-sm text-gray-600">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-xs text-gray-500">
+                                                <FiUser />
+                                            </div>
+                                            {demoArticle.author_name}
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 text-sm text-gray-600">
+                                        <span className="inline-flex items-center px-2 py-1 rounded-md bg-gray-100 text-xs">
+                                            {demoArticle.section?.name}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {demoArticle.status === 'published' ? (
+                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border bg-green-50 text-green-700 border-green-100">
+                                                <FiCheckCircle size={12} />
+                                                منشور
+                                            </span>
+                                        ) : (
+                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border bg-gray-100 text-gray-600 border-gray-200">
+                                                <FiXCircle size={12} />
+                                                مسودة
+                                            </span>
+                                        )}
+                                    </td>
+                                    <td className="px-6 py-4 text-sm text-gray-500 dir-ltr text-right">
+                                        {demoArticle.gregorian_date}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center gap-2">
+                                            <div className="relative group">
+                                                <button
+                                                    onClick={toggleStatusDemo}
+                                                    className={`p-1.5 rounded-md transition-all ${demoArticle.status === 'published'
+                                                        ? 'text-red-600 hover:bg-red-50'
+                                                        : 'text-green-600 hover:bg-green-50'
+                                                        }`}
+                                                    title={demoArticle.status === 'published' ? 'إيقاف النشر' : 'نشر المقال'}
+                                                >
+                                                    {demoArticle.status === 'published' ? <FiEyeOff size={16} /> : <FiEye size={16} />}
+                                                </button>
+                                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                                                    {demoArticle.status === 'published' ? 'إيقاف نشر المقال' : 'نشر المقال'}
+                                                </div>
+                                            </div>
+                                            <Link
+                                                href={`/admin/articles/edit/${demoArticle.id}`}
+                                                className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+                                                title="تعديل المقال التجريبي"
+                                            >
+                                                <FiEdit2 size={16} />
+                                            </Link>
+                                            <button
+                                                onClick={preDeleteDemo}
+                                                className="p-1.5 text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                                title="حذف المقال التجريبي"
+                                            >
+                                                <FiTrash2 size={16} />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                ) : (
                                 <tr>
                                     <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
                                         لا توجد مقالات
                                     </td>
                                 </tr>
+                                )
                             ) : (
                                 paginatedArticles.map((article) => (
                                     <tr key={article.id} className="hover:bg-gray-50/50 transition-colors group">
