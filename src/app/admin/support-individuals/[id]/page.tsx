@@ -174,7 +174,7 @@ export default function IndividualRequestDetailsPage() {
                 <div className="lg:col-span-2 space-y-6">
                     {/* Personal Information */}
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 transition hover:shadow-md">
-                        <h2 className="text-lg font-semibold text-gray-800 mb-4">المعلومات الشخصية</h2>
+                        <h2 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-3">👤 المعلومات الشخصية</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
@@ -187,6 +187,104 @@ export default function IndividualRequestDetailsPage() {
                             </div>
 
                             <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-pink-50 flex items-center justify-center">
+                                    <span className="text-pink-600">👤</span>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-gray-500">الجنس</p>
+                                    <p className="text-sm font-medium text-gray-900">
+                                        {request.gender === 'male' ? 'ذكر' : request.gender === 'female' ? 'أنثى' : request.gender || '-'}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center">
+                                    <span className="text-indigo-600">🌍</span>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-gray-500">الجنسية</p>
+                                    <p className="text-sm font-medium text-gray-900">{request.nationality || '-'}</p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-cyan-50 flex items-center justify-center">
+                                    <span className="text-cyan-600">🏙️</span>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-gray-500">المدينة</p>
+                                    <p className="text-sm font-medium text-gray-900">{request.city || '-'}</p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center">
+                                    <span className="text-amber-600">🏠</span>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-gray-500">نوع السكن</p>
+                                    <p className="text-sm font-medium text-gray-900">
+                                        {request.housing_type_other || request.housing_type || '-'}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-rose-50 flex items-center justify-center">
+                                    <FiCalendar className="text-rose-600" size={20} />
+                                </div>
+                                <div>
+                                    <p className="text-xs text-gray-500">تاريخ الميلاد</p>
+                                    <p className="text-sm font-medium text-gray-900">
+                                        {request.birth_date ? new Date(request.birth_date).toLocaleDateString('ar-EG') : '-'}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center">
+                                    <span className="text-red-600">📅</span>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-gray-500">تاريخ انتهاء الهوية</p>
+                                    <p className="text-sm font-medium text-gray-900">
+                                        {request.identity_expiry_date ? new Date(request.identity_expiry_date).toLocaleDateString('ar-EG') : '-'}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center">
+                                    <span className="text-purple-600">💍</span>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-gray-500">الحالة الاجتماعية</p>
+                                    <p className="text-sm font-medium text-gray-900">
+                                        {request.marital_status === 'single' ? 'أعزب' : request.marital_status === 'married' ? 'متزوج' : request.marital_status || '-'}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {request.family_members_count && (
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-lg bg-teal-50 flex items-center justify-center">
+                                        <span className="text-teal-600">👨‍👩‍👧‍👦</span>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-500">عدد أفراد الأسرة</p>
+                                        <p className="text-sm font-medium text-gray-900">{request.family_members_count}</p>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Contact Information */}
+                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 transition hover:shadow-md">
+                        <h2 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-3">📞 معلومات التواصل</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center">
                                     <FiPhone className="text-green-600" size={20} />
                                 </div>
@@ -196,8 +294,20 @@ export default function IndividualRequestDetailsPage() {
                                 </div>
                             </div>
 
-                            {request.email && (
+                            {request.whatsapp_number && (
                                 <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center">
+                                        <span className="text-emerald-600">📱</span>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-500">رقم الواتساب</p>
+                                        <p className="text-sm font-medium text-gray-900 font-mono">{request.whatsapp_number}</p>
+                                    </div>
+                                </div>
+                            )}
+
+                            {request.email && (
+                                <div className="flex items-center gap-3 md:col-span-2">
                                     <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center">
                                         <FiMail className="text-purple-600" size={20} />
                                     </div>
@@ -207,21 +317,246 @@ export default function IndividualRequestDetailsPage() {
                                     </div>
                                 </div>
                             )}
+                        </div>
+                    </div>
+
+                    {/* Qualifications & Work */}
+                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 transition hover:shadow-md">
+                        <h2 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-3">🎓 المؤهلات والعمل</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+                                    <span className="text-blue-600">📚</span>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-gray-500">النشاط العلمي</p>
+                                    <p className="text-sm font-medium text-gray-900">
+                                        {request.scientific_activity_other || request.scientific_activity || '-'}
+                                    </p>
+                                </div>
+                            </div>
 
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center">
-                                    <FiCalendar className="text-orange-600" size={20} />
+                                    <span className="text-orange-600">💼</span>
                                 </div>
                                 <div>
-                                    <p className="text-xs text-gray-500">تاريخ التقديم</p>
+                                    <p className="text-xs text-gray-500">مكان العمل</p>
+                                    <p className="text-sm font-medium text-gray-900">{request.workplace || '-'}</p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-lime-50 flex items-center justify-center">
+                                    <span className="text-lime-600">💰</span>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-gray-500">هل يوجد دخل؟</p>
                                     <p className="text-sm font-medium text-gray-900">
-                                        {new Date(request.created_at).toLocaleDateString('ar-EG', {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric'
-                                        })}
+                                        {request.has_income ? 'نعم' : 'لا'}
                                     </p>
                                 </div>
+                            </div>
+
+                            {request.income_source && (
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-lg bg-yellow-50 flex items-center justify-center">
+                                        <span className="text-yellow-600">📊</span>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-500">مصدر الدخل</p>
+                                        <p className="text-sm font-medium text-gray-900">{request.income_source}</p>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Support Details */}
+                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 transition hover:shadow-md">
+                        <h2 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-3">🎯 تفاصيل الدعم</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-violet-50 flex items-center justify-center">
+                                    <span className="text-violet-600">📋</span>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-gray-500">نطاق الدعم</p>
+                                    <p className="text-sm font-medium text-gray-900">
+                                        {request.support_scope === 'full' ? 'دعم كامل' : request.support_scope === 'partial' ? 'دعم جزئي' : request.support_scope || '-'}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-fuchsia-50 flex items-center justify-center">
+                                    <span className="text-fuchsia-600">📌</span>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-gray-500">نوع الدعم</p>
+                                    <p className="text-sm font-medium text-gray-900">
+                                        {request.support_type_other || request.support_type || '-'}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-3 md:col-span-2">
+                                <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center">
+                                    <span className="text-emerald-600">💵</span>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-gray-500">المبلغ المطلوب</p>
+                                    <p className="text-lg font-bold text-emerald-600">
+                                        {request.amount_requested ? `${parseFloat(request.amount_requested).toLocaleString('ar-SA')} ريال` : '-'}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Bank Information */}
+                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 transition hover:shadow-md">
+                        <h2 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-3">🏦 المعلومات البنكية</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-sky-50 flex items-center justify-center">
+                                    <span className="text-sky-600">🏦</span>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-gray-500">اسم البنك</p>
+                                    <p className="text-sm font-medium text-gray-900">{request.bank_name || '-'}</p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center">
+                                    <span className="text-slate-600">💳</span>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-gray-500">رقم الآيبان</p>
+                                    <p className="text-sm font-medium text-gray-900 font-mono break-all">{request.bank_account_iban || '-'}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Documents */}
+                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 transition hover:shadow-md">
+                        <h2 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-3">📂 المرفقات والوثائق</h2>
+                        <div className="space-y-3">
+                            {request.identity_image_path && (
+                                <a
+                                    href={getFileUrl(request.identity_image_path) || '#'}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <FiFileText className="text-gray-600" size={20} />
+                                        <span className="text-sm font-medium text-gray-900">صورة الهوية</span>
+                                    </div>
+                                    <FiDownload className="text-gray-400 group-hover:text-primary" size={20} />
+                                </a>
+                            )}
+
+                            {request.academic_qualification_path && (
+                                <a
+                                    href={getFileUrl(request.academic_qualification_path) || '#'}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <FiFileText className="text-gray-600" size={20} />
+                                        <span className="text-sm font-medium text-gray-900">المؤهل الأكاديمي</span>
+                                    </div>
+                                    <FiDownload className="text-gray-400 group-hover:text-primary" size={20} />
+                                </a>
+                            )}
+
+                            {request.cv_path && (
+                                <a
+                                    href={getFileUrl(request.cv_path) || '#'}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <FiFileText className="text-gray-600" size={20} />
+                                        <span className="text-sm font-medium text-gray-900">السيرة الذاتية</span>
+                                    </div>
+                                    <FiDownload className="text-gray-400 group-hover:text-primary" size={20} />
+                                </a>
+                            )}
+
+                            {request.recommendation_path && (
+                                <a
+                                    href={getFileUrl(request.recommendation_path) || '#'}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <FiFileText className="text-gray-600" size={20} />
+                                        <span className="text-sm font-medium text-gray-900">التوصيات</span>
+                                    </div>
+                                    <FiDownload className="text-gray-400 group-hover:text-primary" size={20} />
+                                </a>
+                            )}
+
+                            {request.closure_receipt_path && (
+                                <a
+                                    href={getFileUrl(request.closure_receipt_path) || '#'}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center justify-between p-4 bg-green-50 hover:bg-green-100 rounded-lg transition-colors group"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <FiFileText className="text-green-600" size={20} />
+                                        <span className="text-sm font-medium text-green-900">إيصال الإغلاق</span>
+                                    </div>
+                                    <FiDownload className="text-green-400 group-hover:text-green-600" size={20} />
+                                </a>
+                            )}
+
+                            {request.project_report_path && (
+                                <a
+                                    href={getFileUrl(request.project_report_path) || '#'}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center justify-between p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors group"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <FiFileText className="text-blue-600" size={20} />
+                                        <span className="text-sm font-medium text-blue-900">تقرير المشروع</span>
+                                    </div>
+                                    <FiDownload className="text-blue-400 group-hover:text-blue-600" size={20} />
+                                </a>
+                            )}
+
+                            {!request.identity_image_path && !request.academic_qualification_path && !request.cv_path && !request.recommendation_path && !request.closure_receipt_path && !request.project_report_path && (
+                                <p className="text-gray-500 text-sm text-center py-4">لا توجد مرفقات</p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Submission Info */}
+                    <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl border border-gray-200 p-6">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center shadow-sm">
+                                <FiCalendar className="text-gray-600" size={20} />
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-500">تاريخ التقديم</p>
+                                <p className="text-sm font-medium text-gray-900">
+                                    {new Date(request.created_at).toLocaleDateString('ar-EG', {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -451,7 +786,7 @@ export default function IndividualRequestDetailsPage() {
                                 إلغاء
                             </button>
                             <button
-                                onClick={() => handleUpdateStatus('waiting_for_documents', adminMessage)}
+                                onClick={() => handleUpdateStatus('waiting_for_documents', undefined, adminMessage)}
                                 disabled={!adminMessage.trim() || actionLoading}
                                 className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
                             >

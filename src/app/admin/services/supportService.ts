@@ -71,6 +71,13 @@ export const SupportService = {
 
         updateStatus: async (id: number, data: UpdateStatusRequest): Promise<any> => {
             const token = localStorage.getItem("token");
+
+            // Filter out undefined values - JSON.stringify removes them anyway
+            // but we want to be explicit and send only defined values
+            const cleanData = Object.fromEntries(
+                Object.entries(data).filter(([_, v]) => v !== undefined)
+            );
+
             const res = await fetch(`${API_BASE_URL}/admin/support/individual/requests/${id}/update`, {
                 method: "POST",
                 headers: {
@@ -78,7 +85,7 @@ export const SupportService = {
                     "Content-Type": "application/json",
                     "Accept": "application/json",
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify(cleanData)
             });
 
             if (!res.ok) throw new Error("فشل تحديث حالة الطلب");
@@ -139,6 +146,12 @@ export const SupportService = {
 
         updateStatus: async (id: number, data: UpdateStatusRequest): Promise<any> => {
             const token = localStorage.getItem("token");
+
+            // Filter out undefined values
+            const cleanData = Object.fromEntries(
+                Object.entries(data).filter(([_, v]) => v !== undefined)
+            );
+
             const res = await fetch(`${API_BASE_URL}/admin/support/institutional/requests/${id}/update`, {
                 method: "POST",
                 headers: {
@@ -146,7 +159,7 @@ export const SupportService = {
                     "Content-Type": "application/json",
                     "Accept": "application/json",
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify(cleanData)
             });
 
             if (!res.ok) throw new Error("فشل تحديث حالة الطلب");

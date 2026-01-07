@@ -489,7 +489,7 @@ export default function InstitutionalRequestDetailsPage() {
                                 إلغاء
                             </button>
                             <button
-                                onClick={() => handleUpdateStatus('waiting_for_documents', adminMessage)}
+                                onClick={() => handleUpdateStatus('waiting_for_documents', undefined, adminMessage)}
                                 disabled={!adminMessage.trim() || actionLoading}
                                 className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
                             >

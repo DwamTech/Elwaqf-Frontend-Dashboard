@@ -1,8 +1,8 @@
 .section {
   width: 100%;
   padding: clamp(32px, 6vw, 56px) 20px;
-  background: radial-gradient(1200px 500px at 50% -100px, rgba(56,95,88,0.08), transparent 60%),
-              linear-gradient(135deg, #f9fbfa, #f3f7f6);
+  background: radial-gradient(1200px 500px at 50% -100px, rgba(56, 95, 88, 0.08), transparent 60%),
+    linear-gradient(135deg, #f9fbfa, #f3f7f6);
 }
 
 .container {
@@ -11,7 +11,7 @@
   margin: 0 auto;
   border-radius: 20px;
   padding: clamp(22px, 4.6vw, 34px);
-  background: linear-gradient(180deg, #385f583c, rgba(255,255,255,0.96));
+  background: linear-gradient(180deg, #385f583c, rgba(255, 255, 255, 0.96));
   border: 1px solid rgba(0, 0, 0, 0.06);
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
   backdrop-filter: blur(6px);
@@ -121,10 +121,10 @@
   font-family: inherit;
 }
 
-.input:focus + .flabel,
-.textarea:focus + .flabel,
-.input:not(:placeholder-shown) + .flabel,
-.textarea:not(:placeholder-shown) + .flabel {
+.input:focus+.flabel,
+.textarea:focus+.flabel,
+.input:not(:placeholder-shown)+.flabel,
+.textarea:not(:placeholder-shown)+.flabel {
   top: 8px;
   font-size: 12px;
   color: var(--brand-primary);
@@ -195,6 +195,185 @@
 }
 
 @keyframes floatIn {
-  from { opacity: 0; transform: translateY(10px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   INPUT ERROR STATE
+═══════════════════════════════════════════════════════════════════════════ */
+.inputError {
+  border-color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.03);
+}
+
+.inputError:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TOAST NOTIFICATION
+═══════════════════════════════════════════════════════════════════════════ */
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  animation: toastSlideIn 0.4s ease;
+}
+
+.toastsuccess {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+
+.toasterror {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+}
+
+.toastClose {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LOADING SPINNER
+═══════════════════════════════════════════════════════════════════════════ */
+.submitting {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ATTACHMENT BUTTON
+═══════════════════════════════════════════════════════════════════════════ */
+.fileInput {
+  display: none;
+}
+
+.attachLabel {
+  display: block;
+  cursor: pointer;
+}
+
+.attachBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border: 2px dashed #ddd;
+  border-radius: 12px;
+  background: #fafafa;
+  color: #666;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.attachBtn:hover {
+  border-color: var(--brand-primary);
+  background: rgba(56, 95, 88, 0.03);
+  color: var(--brand-primary);
+}
+
+.attachBtnActive {
+  border-color: var(--brand-primary);
+  border-style: solid;
+  background: rgba(56, 95, 88, 0.05);
+  color: var(--brand-primary);
+}
+
+.attachCheck {
+  color: #10b981;
+  font-weight: bold;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HINT TEXT
+═══════════════════════════════════════════════════════════════════════════ */
+.hint {
+  color: #9ca3af;
+  font-size: 12px;
+  text-align: start;
+  margin-top: 4px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  .form {
+    grid-template-columns: 1fr;
+  }
+
+  .toast {
+    left: 16px;
+    right: 16px;
+    transform: none;
+  }
+
+  @keyframes toastSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }

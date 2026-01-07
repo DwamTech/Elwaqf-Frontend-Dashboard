@@ -12,7 +12,8 @@ import {
     FiMenu,
     FiLogOut,
     FiShield,
-    FiUser
+    FiUser,
+    FiMail
 } from "react-icons/fi";
 import {
     FaBook,
@@ -33,57 +34,31 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
+    // ═══════════════════════════════════════════════════════════════════════
+    // 1. الرئيسية
+    // ═══════════════════════════════════════════════════════════════════════
     {
         title: "الرئيسية",
         icon: <FiHome size={20} />,
         href: "/admin",
     },
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 2. الحوكمة
+    // ═══════════════════════════════════════════════════════════════════════
     {
-        title: "إدارة المقالات",
-        icon: <MdArticle size={20} />,
-        submenu: [
-            { title: "عرض المقالات", href: "/admin/articles" },
-            { title: "أضافة مقال", href: "/admin/articles/create" },
-        ],
-    },
-    {
-        title: "إدارة الكتب",
-        icon: <FaBook size={20} />,
-        submenu: [
-            { title: "عرض الكتب", href: "/admin/books" },
-            { title: "أضافة كتاب", href: "/admin/books/create" },
-        ],
-    },
-    {
-        title: "طلبات دعم المؤسسات",
-        icon: <FaBuilding size={20} />,
-        href: "/admin/support-institutions",
-    },
-    {
-        title: "طلبات دعم الافراد",
-        icon: <FaHandHoldingHeart size={20} />,
-        href: "/admin/support-individuals",
-    },
-    {
-        title: "إدارة الحوكمة",
+        title: "الحوكمة",
         icon: <FiShield size={20} />,
         submenu: [
             { title: "عن الوقف", href: "/admin/governance/about-waqf" },
-            { title: "عن مصارف الريع", href: "/admin/governance/spending-channels" },
             {
-                title: "اللوائح",
+                title: "اللوائح والسياسات",
                 submenu: [
                     { title: "عرض اللوائح", href: "/admin/governance/regulations" },
                     { title: "إضافة لائحة", href: "/admin/governance/regulations/create" },
                 ]
             },
-            {
-                title: "أخبار الوقف",
-                submenu: [
-                    { title: "عرض الأخبار", href: "/admin/governance/waqf-news" },
-                    { title: "إضافة خبر", href: "/admin/governance/waqf-news/create" },
-                ]
-            },
+            { title: "مصارف الريع", href: "/admin/governance/spending-channels" },
             {
                 title: "التقارير المالية",
                 submenu: [
@@ -100,6 +75,47 @@ const navItems: NavItem[] = [
             },
         ],
     },
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 3. أخبار الوقف (منفصل في الهيدر الرئيسي)
+    // ═══════════════════════════════════════════════════════════════════════
+    {
+        title: "أخبار الوقف",
+        icon: <MdArticle size={20} />,
+        submenu: [
+            { title: "عرض الأخبار", href: "/admin/governance/waqf-news" },
+            { title: "إضافة خبر", href: "/admin/governance/waqf-news/create" },
+        ],
+    },
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 4. تواصل معنا (صفحات جديدة - غير موجودة بعد)
+    // ═══════════════════════════════════════════════════════════════════════
+    {
+        title: "تواصل معنا",
+        icon: <FiMail size={20} />,
+        submenu: [
+            { title: "تقييم رضا المستفيدين", href: "/admin/contact/satisfaction-survey" },
+            { title: "صندوق الاقتراحات", href: "/admin/contact/suggestions" },
+            { title: "صندوق الشكاوي", href: "/admin/contact/complaints" },
+        ],
+    },
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 5. طلبات الدعم
+    // ═══════════════════════════════════════════════════════════════════════
+    {
+        title: "طلبات الدعم",
+        icon: <FaHandHoldingHeart size={20} />,
+        submenu: [
+            { title: "طلبات المؤسسات", href: "/admin/support-institutions" },
+            { title: "طلبات الأفراد", href: "/admin/support-individuals" },
+        ],
+    },
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // إعدادات النظام
+    // ═══════════════════════════════════════════════════════════════════════
     {
         title: "إدارة حسابك",
         icon: <FiUser size={20} />,
@@ -109,7 +125,7 @@ const navItems: NavItem[] = [
         title: "إدارة الحسابات",
         icon: <FaUserShield size={20} />,
         href: "/admin/users",
-        adminOnly: true, // This will be hidden for non-admin users
+        adminOnly: true,
     },
     {
         title: "النسخ الاحتياطي",

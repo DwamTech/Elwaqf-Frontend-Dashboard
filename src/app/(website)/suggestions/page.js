@@ -14,6 +14,7 @@ export default function SuggestionsPage() {
         title="صندوق الإقتراحات"
         description="نسعد باستقبال آرائكم واقتراحاتكم للمشاريع الخيرية والدعوية والتي تصب في أهداف الوقف ، وزيادة قدرته على دعم الخير ونشر العلم في ربوع الأرض"
         submitLabel="إرسال الإقتراح"
+        type="suggestion"
       />
     </main>
   );
